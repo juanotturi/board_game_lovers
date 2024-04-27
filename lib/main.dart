@@ -1,3 +1,4 @@
+import 'package:board_game_lovers/core/app_router.dart';
 import 'package:flutter/material.dart';
 
 void main() {
@@ -9,12 +10,9 @@ class MainApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
-      home: Scaffold(
-        body: Center(
-          child: Text('¡Hola Mundo!'),
-        ),
-      ),
+    return MaterialApp.router(
+      debugShowCheckedModeBanner: false,
+      routerConfig: appRouter,
     );
   }
 }
