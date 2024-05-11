@@ -34,8 +34,7 @@ class HomeScreen extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            customElevatedButton(
-                context, 'Buscar Juegos', GamesListScreen.name),
+            customElevatedButton(context, 'Buscar Juegos', GamesListScreen.name),
             customElevatedButton(context, 'Mis Juegos', MyGamesScreen.name),
             customElevatedButton(context, 'Comunidad', CommunityScreen.name),
           ],
