@@ -1,4 +1,4 @@
-import 'package:board_game_lovers/entities/game.dart';
+import 'package:board_game_lovers/entities/game_entity.dart';
 import 'package:board_game_lovers/screens/community_screen.dart';
 import 'package:board_game_lovers/screens/game_detail_screen.dart';
 import 'package:board_game_lovers/screens/games_list_screen.dart';
@@ -18,12 +18,11 @@ final appRouter = GoRouter(initialLocation: '/', routes: [
     builder: (context, state) => const GamesListScreen(),
   ),
   GoRoute(
-    path: '/game_detail',
-    name: GameDetailScreen.name,
-    builder: (context, state) => GameDetailScreen(
-      game: state.extra as Game,
-    )
-  ),
+      path: '/game_detail',
+      name: GameDetailScreen.name,
+      builder: (context, state) => GameDetailScreen(
+            game: state.extra as Game,
+          )),
   GoRoute(
     path: '/mygames',
     name: MyGamesScreen.name,

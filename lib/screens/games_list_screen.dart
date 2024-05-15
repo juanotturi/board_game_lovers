@@ -1,6 +1,6 @@
 import 'package:board_game_lovers/screens/game_detail_screen.dart';
 import 'package:flutter/material.dart';
-import 'package:board_game_lovers/entities/game.dart';
+import 'package:board_game_lovers/entities/game_entity.dart';
 import 'package:board_game_lovers/core/controller/game_controller.dart';
 import 'package:go_router/go_router.dart';
 
@@ -9,7 +9,6 @@ class GamesListScreen extends StatelessWidget {
 
   const GamesListScreen({super.key}); // Añadí el constructor correctamente
 
-  
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -40,7 +39,8 @@ class GamesListScreen extends StatelessWidget {
                       children: [
                         Text(
                           game.title!,
-                          style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                          style: const TextStyle(
+                              fontSize: 18, fontWeight: FontWeight.bold),
                         ),
                         const SizedBox(height: 8),
                         Text('Año: ${game.yearPublished}'),

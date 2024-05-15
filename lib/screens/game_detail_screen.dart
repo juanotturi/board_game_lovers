@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:board_game_lovers/entities/game.dart';
+import 'package:board_game_lovers/entities/game_entity.dart';
 
 class GameDetailScreen extends StatelessWidget {
   static const String name = 'game_detail_screen';
@@ -22,8 +22,10 @@ class GameDetailScreen extends StatelessWidget {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  _buildInfoColumn('Players', '${game.minPlayers}-${game.maxPlayers}'),
-                  _buildInfoColumn('Play Time', '${game.minPlayTime}-${game.maxPlayTime} min'),
+                  _buildInfoColumn(
+                      'Players', '${game.minPlayers}-${game.maxPlayers}'),
+                  _buildInfoColumn('Play Time',
+                      '${game.minPlayTime}-${game.maxPlayTime} min'),
                   _buildInfoColumn('Age', '${game.minAge}+'),
                 ],
               ),
