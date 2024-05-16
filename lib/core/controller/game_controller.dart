@@ -7,7 +7,7 @@ import '../../entities/game.dart';
 
 class GameController {
 
-  Future<List<Game>> getBoardGameTop10() async {
+  Future<List<Game>> getBoardGameTop() async {
     const url = 'https://boardgamegeek.com/browse/boardgame';
     final response = await http.get(Uri.parse(url));
     final List<Game> topGames = [];
@@ -38,17 +38,17 @@ class GameController {
   }
 
   
-int? extractIdFromLink(String link) {
-  RegExp regex = RegExp(r'/boardgame/(\d+)/');
-  Match? match = regex.firstMatch(link);
-  return match != null ? int.tryParse(match.group(1)!) : null;
-}
+  int? extractIdFromLink(String link) {
+    RegExp regex = RegExp(r'/boardgame/(\d+)/');
+    Match? match = regex.firstMatch(link);
+    return match != null ? int.tryParse(match.group(1)!) : null;
+  }
 
   
   Future<Game?> getBoardGame(int gameId) async {
     var bgg = Bgg();
     var boardGame = (await bgg.getBoardGame(gameId))!;
-    Game game = Game(
+    var game = Game(
       id: boardGame.id, 
       title: boardGame.name,
       description: boardGame.description,
