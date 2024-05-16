@@ -16,7 +16,7 @@ class GamesListScreen extends StatelessWidget {
         title: const Text('Lista De Juegos'),
       ),
       body: FutureBuilder<List<Game>>(
-        future: GameController().getBoardGameTop10(),
+        future: GameController().getBoardGameTop(),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(child: CircularProgressIndicator());
