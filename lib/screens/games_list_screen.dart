@@ -7,7 +7,7 @@ import 'package:go_router/go_router.dart';
 class GamesListScreen extends StatelessWidget {
   static const String name = '/games';
 
-  const GamesListScreen({super.key}); // Añadí el constructor correctamente
+  const GamesListScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -51,8 +51,8 @@ class GamesListScreen extends StatelessWidget {
                                 height: 100,
                                 width: 100,
                               )
-                            : Container(), // Mostrar solo si hay una imagen disponible
-                        const Divider(), // Separador entre elementos de la lista
+                            : Container(),
+                        const Divider(),
                       ],
                     ),
                   ),
