@@ -18,4 +18,18 @@ class User {
     required this.birthDate,
     this.favoriteGames,
   });
+
+  factory User.fromJson(Map<String, dynamic> json) {
+    return User(
+      id: json['id'] as int?,
+      name: json['name'] as String?,
+      surname: json['surname'] as String?,
+      email: json['email'] as String?,
+      password: json['password'] as String?,
+      birthDate: json['birthDate'] as int?,
+      favoriteGames: (json['favoriteGames'] as List<dynamic>?)
+          ?.map((gameJson) => Game.fromJson(gameJson as Map<String, dynamic>))
+          .toList(),
+    );
+  }
 }

@@ -28,4 +28,23 @@ class Game {
     required this.image,
     this.members,
   });
+
+  factory Game.fromJson(Map<String, dynamic> json) {
+    return Game(
+      id: json['id'] as int?,
+      title: json['title'] as String?,
+      description: json['description'] as String?,
+      yearPublished: json['yearPublished'] as int?,
+      minPlayers: json['minPlayers'] as int?,
+      maxPlayers: json['maxPlayers'] as int?,
+      minPlayTime: json['minPlayTime'] as int?,
+      maxPlayTime: json['maxPlayTime'] as int?,
+      minAge: json['minAge'] as int?,
+      thumbnail: Uri.parse(json['thumbnail'] as String? ?? ''),
+      image: Uri.parse(json['image'] as String? ?? ''),
+      members: (json['members'] as List<dynamic>?)
+          ?.map((userJson) => User.fromJson(userJson as Map<String, dynamic>))
+          .toList(),
+    );
+  }
 }

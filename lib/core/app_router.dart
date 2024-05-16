@@ -26,7 +26,7 @@ final appRouter = GoRouter(initialLocation: '/', routes: [
   GoRoute(
     path: '/mygames',
     name: MyGamesScreen.name,
-    builder: (context, state) => const MyGamesScreen(),
+    builder: (context, state) => MyGamesScreen(),
   ),
   GoRoute(
     path: '/community',
