@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:http/http.dart' as http;
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
@@ -42,21 +43,19 @@ class UserController extends ChangeNotifier {
 
   Future<void> signInWithEmail(BuildContext context, String email, String password) async {
     try {
-      UserCredential credencial = await _auth.signInWithEmailAndPassword(
+      UserCredential credential = await _auth.signInWithEmailAndPassword(
         email: email.trim(),
         password: password.trim(),
       );
-      user = credencial.user;
+      user = credential.user;
       notifyListeners();
       if (context.mounted) {
-        Navigator.pushReplacementNamed(context, '/'); // Asegúrate de tener una ruta configurada para Home
+        context.push('/'); // Asegúrate de tener una ruta configurada para Home
       }
     } on FirebaseAuthException catch (e) {
       if (context.mounted) {
-        if (e.code == "user-not-found") {
-          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("User not found")));
-        } else if (e.code == "wrong-password") {
-          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("Wrong password")));
+        if (e.code == "invalid-credential") {
+          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("Invalid credentials")));
         } else {
           ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("An error occurred")));
         }
@@ -77,11 +76,35 @@ class UserController extends ChangeNotifier {
       user = userCredential.user;
       notifyListeners();
       if (context.mounted) {
-        Navigator.pushReplacementNamed(context, '/'); // Asegúrate de tener una ruta configurada para Home
+        context.push('/'); // Asegúrate de tener una ruta configurada para Home
       }
     } catch (e) {
       if (context.mounted) {
         ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("An error occurred")));
+      }
+    }
+  }
+
+  Future<void> signUpWithEmail(BuildContext context, String email, String password) async {
+    try {
+      UserCredential credential = await _auth.createUserWithEmailAndPassword(
+        email: email.trim(),
+        password: password.trim(),
+      );
+      user = credential.user;
+      notifyListeners();
+      if (context.mounted) {
+        context.push('/'); // Asegúrate de tener una ruta configurada para Home
+      }
+    } on FirebaseAuthException catch (e) {
+      if (context.mounted) {
+        if (e.code == "email-already-in-use") {
+          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("Email already in use")));
+        } else if (e.code == "weak-password") {
+          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("Weak password")));
+        } else {
+          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("An error occurred")));
+        }
       }
     }
   }

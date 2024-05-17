@@ -1,50 +1,45 @@
 import 'package:flutter/material.dart';
 import 'package:board_game_lovers/widgets/menu.dart'; // Importa el menú
-import 'package:go_router/go_router.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:board_game_lovers/core/controller/user_controller.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:go_router/go_router.dart';
 
-class LoginScreen extends StatefulWidget {
-  static const String name = '/login';
+class RegisterScreen extends StatefulWidget {
+  static const String name = '/register';
 
-  const LoginScreen({super.key});
+  const RegisterScreen({super.key});
 
   @override
-  LoginScreenState createState() => LoginScreenState();
+  RegisterScreenState createState() => RegisterScreenState();
 }
 
-class LoginScreenState extends State<LoginScreen> {
+class RegisterScreenState extends State<RegisterScreen> {
   final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _nameController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
+  final TextEditingController _confirmPasswordController = TextEditingController();
   bool _isPasswordVisible = false;
+  bool _isConfirmPasswordVisible = false;
   bool _isLoading = false;
-  bool _isLogin = true;
   String? _selectedButton;
 
-  Future<void> _signInWithEmailAndPassword(UserController userController) async {
+  Future<void> _signUpWithEmailAndPassword(UserController userController) async {
+    if (_passwordController.text != _confirmPasswordController.text) {
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("Passwords do not match")));
+      return;
+    }
+
     setState(() {
       _isLoading = true;
     });
-    await userController.signInWithEmail(context, _emailController.text, _passwordController.text);
+    await userController.signUpWithEmail(
+      context,
+      _emailController.text,
+      _passwordController.text,
+    );
     setState(() {
       _isLoading = false;
-    });
-  }
-
-  Future<void> _signInWithGoogle(UserController userController) async {
-    setState(() {
-      _isLoading = true;
-    });
-    await userController.signInWithGoogle(context);
-    setState(() {
-      _isLoading = false;
-    });
-  }
-
-  void _toggleFormType() {
-    setState(() {
-      _isLogin = !_isLogin;
     });
   }
 
@@ -127,7 +122,7 @@ class LoginScreenState extends State<LoginScreen> {
                           const SizedBox(height: 20),
                           const Center(
                             child: Text(
-                              'BoardGame Lover Login',
+                              'BoardGame Lover Registration',
                               style: TextStyle(
                                 fontSize: 27,
                                 fontWeight: FontWeight.bold,
@@ -141,6 +136,17 @@ class LoginScreenState extends State<LoginScreen> {
                             decoration: InputDecoration(
                               labelText: 'Email',
                               prefixIcon: const Icon(Icons.email),
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(8.0),
+                              ),
+                            ),
+                          ),
+                          const SizedBox(height: 20),
+                          TextField(
+                            controller: _nameController,
+                            decoration: InputDecoration(
+                              labelText: 'Name',
+                              prefixIcon: const Icon(Icons.person),
                               border: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(8.0),
                               ),
@@ -167,15 +173,31 @@ class LoginScreenState extends State<LoginScreen> {
                             ),
                           ),
                           const SizedBox(height: 20),
+                          TextField(
+                            controller: _confirmPasswordController,
+                            obscureText: !_isConfirmPasswordVisible,
+                            decoration: InputDecoration(
+                              labelText: 'Confirm Password',
+                              prefixIcon: const Icon(Icons.lock),
+                              suffixIcon: IconButton(
+                                icon: Icon(_isConfirmPasswordVisible ? Icons.visibility : Icons.visibility_off),
+                                onPressed: () {
+                                  setState(() {
+                                    _isConfirmPasswordVisible = !_isConfirmPasswordVisible;
+                                  });
+                                },
+                              ),
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(8.0),
+                              ),
+                            ),
+                          ),
+                          const SizedBox(height: 20),
                           ElevatedButton(
                             onPressed: _isLoading
                                 ? null
                                 : () async {
-                                    if (_isLogin) {
-                                      await _signInWithEmailAndPassword(userController);
-                                    } else {
-                                      _toggleFormType();
-                                    }
+                                    await _signUpWithEmailAndPassword(userController);
                                   },
                             style: ElevatedButton.styleFrom(
                               backgroundColor: Colors.brown,
@@ -184,49 +206,10 @@ class LoginScreenState extends State<LoginScreen> {
                                 ? const CircularProgressIndicator(
                                     valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
                                   )
-                                : Text(
-                                    _isLogin ? 'Sign In' : 'Register',
-                                    style: const TextStyle(color: Colors.white),
+                                : const Text(
+                                    'Register',
+                                    style: TextStyle(color: Colors.white),
                                   ),
-                          ),
-                          const SizedBox(height: 10),
-                          if (_isLogin)
-                            TextButton(
-                              onPressed: () {
-                                // Navegar a la pantalla de restablecer contraseña
-                              },
-                              child: const Text(
-                                'Forgot your password?',
-                                style: TextStyle(color: Colors.black),
-                              ),
-                            ),
-                          const SizedBox(height: 10),
-                          ElevatedButton.icon(
-                            icon: Image.asset('assets/google_logo.png', height: 24),
-                            label: const Text('Access with Google'),
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: Colors.white,
-                              foregroundColor: Colors.black,
-                            ),
-                            onPressed: _isLoading
-                                ? null
-                                : () async {
-                                    await _signInWithGoogle(userController);
-                                  },
-                          ),
-                          const SizedBox(height: 10),
-                          TextButton(
-                            onPressed: () {
-                              if (_isLogin) {
-                                context.push('/register');
-                              } else {
-                                _toggleFormType();
-                              }
-                            },
-                            child: Text(
-                              _isLogin ? 'Register' : 'Login',
-                              style: const TextStyle(color: Colors.black),
-                            ),
                           ),
                         ],
                       );
