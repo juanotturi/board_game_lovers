@@ -4,10 +4,11 @@ import 'package:html/parser.dart' as parser;
 import 'package:bgg_api/bgg_api.dart';
 
 class GameController {
-  Future<List<Game>> getBoardGameTop() async {
+  static const int _maxRetries = 3; // Número máximo de reintentos
+
+  Stream<Game> getBoardGameTop() async* {
     const url = 'https://boardgamegeek.com/browse/boardgame';
     final response = await http.get(Uri.parse(url));
-    final List<Game> topGames = [];
 
     if (response.statusCode == 200) {
       final document = parser.parse(response.body);
@@ -21,17 +22,17 @@ class GameController {
           final hrefAttribute = aElement?.attributes['href'];
           if (hrefAttribute != null) {
             final gameId = extractIdFromLink(hrefAttribute);
-            final boardGame = await getBoardGame(gameId!);
+            if (gameId != null) {
+              final boardGame = await getBoardGame(gameId);
 
-            if (boardGame != null) {
-              topGames.add(boardGame);
+              if (boardGame != null) {
+                yield boardGame;
+              }
             }
           }
         }
       }
     }
-
-    return topGames;
   }
 
   int? extractIdFromLink(String link) {
@@ -42,21 +43,29 @@ class GameController {
 
   Future<Game?> getBoardGame(int gameId) async {
     var bgg = Bgg();
-    var boardGame = (await bgg.getBoardGame(gameId))!;
-    var game = Game(
-      id: boardGame.id,
-      title: boardGame.name,
-      description: boardGame.description,
-      yearPublished: boardGame.yearPublished,
-      minPlayers: boardGame.minPlayers,
-      maxPlayers: boardGame.maxPlayers,
-      minPlayTime: boardGame.minPlayTime,
-      maxPlayTime: boardGame.maxPlayTime,
-      minAge: boardGame.minAge,
-      thumbnail: boardGame.thumbnail,
-      image: boardGame.image,
-    );
-
-    return game;
+    for (int attempt = 0; attempt < _maxRetries; attempt++) {
+      try {
+        var boardGame = (await bgg.getBoardGame(gameId))!;
+        return Game(
+          id: boardGame.id,
+          title: boardGame.name,
+          description: boardGame.description,
+          yearPublished: boardGame.yearPublished,
+          minPlayers: boardGame.minPlayers,
+          maxPlayers: boardGame.maxPlayers,
+          minPlayTime: boardGame.minPlayTime,
+          maxPlayTime: boardGame.maxPlayTime,
+          minAge: boardGame.minAge,
+          thumbnail: boardGame.thumbnail,
+          image: boardGame.image,
+        );
+      } catch (e) {
+        if (attempt == _maxRetries - 1) {
+          rethrow; // Re-lanzar la excepción después de alcanzar el número máximo de reintentos
+        }
+        await Future.delayed(const Duration(seconds: 2)); // Esperar antes de reintentar
+      }
+    }
+    return null; // Este punto nunca debería alcanzarse
   }
 }
