@@ -1,19 +1,20 @@
-/*
-buildscript{
-    repositories{
+buildscript {
+    ext.kotlin_version = '1.9.24' // Añade esta línea para definir la versión de Kotlin
+    repositories {
         google()
         jcenter()
     }
-
-    dependencies{
+    dependencies {
         classpath 'com.google.gms:google-services:4.4.1'
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version" // Añade esta línea para el plugin de Kotlin
     }
 }
-*/
+
 allprojects {
     repositories {
         google()
         mavenCentral()
+        jcenter()
     }
 }
 

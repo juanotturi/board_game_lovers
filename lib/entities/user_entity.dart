@@ -1,6 +1,6 @@
 import 'package:board_game_lovers/entities/game_entity.dart';
 
-class User {
+class BGLUser {
   final int? id;
   final String? name;
   final String? surname;
@@ -9,7 +9,7 @@ class User {
   final int? birthDate;
   final List<Game>? favoriteGames;
 
-  User({
+  BGLUser({
     required this.id,
     required this.name,
     required this.surname,
@@ -19,8 +19,8 @@ class User {
     this.favoriteGames,
   });
 
-  factory User.fromJson(Map<String, dynamic> json) {
-    return User(
+  factory BGLUser.fromJson(Map<String, dynamic> json) {
+    return BGLUser(
       id: json['id'] as int?,
       name: json['name'] as String?,
       surname: json['surname'] as String?,

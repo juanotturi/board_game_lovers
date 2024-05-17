@@ -124,13 +124,13 @@ class GameDetailScreenState extends State<GameDetailScreen> {
                             alignment: Alignment.center,
                             children: [
                               const FaIcon(
-                                FontAwesomeIcons.solidStar,
+                                FontAwesomeIcons.solidHeart,
                                 color: Colors.black, // El borde negro
-                                size: 29, // Tamaño ligeramente mayor para crear el borde
+                                size: 27, // Tamaño ligeramente mayor para crear el borde
                               ),
                               FaIcon(
-                                FontAwesomeIcons.solidStar,
-                                color: _isFavorite ? Colors.yellow : Colors.white,
+                                FontAwesomeIcons.solidHeart,
+                                color: _isFavorite ? Colors.red : Colors.white,
                                 size: 24, // Tamaño original de la estrella
                               ),
                             ],

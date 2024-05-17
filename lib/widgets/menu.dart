@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class AppMenu extends StatefulWidget implements PreferredSizeWidget {
-  const AppMenu({super.key});
+  final bool showLogoOnly;
+  const AppMenu({super.key, this.showLogoOnly = false});
 
   @override
   AppMenuState createState() => AppMenuState();
@@ -14,6 +16,26 @@ class AppMenu extends StatefulWidget implements PreferredSizeWidget {
 
 class AppMenuState extends State<AppMenu> {
   String? _selectedButton;
+  User? user;
+
+  @override
+  void initState() {
+    super.initState();
+    FirebaseAuth.instance.authStateChanges().listen((User? user) {
+      setState(() {
+        this.user = user;
+      });
+    });
+  }
+
+  void _toggleAuth() {
+    if (user != null) {
+      FirebaseAuth.instance.signOut();
+    } else {
+      // Navegar a la pantalla de inicio de sesión
+      context.go('/login');
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -37,7 +59,7 @@ class AppMenuState extends State<AppMenu> {
             Container(
               height: 90, // Altura para la parte sin degradado
               color: const Color.fromRGBO(84, 40, 12, 1), // Color inicial
-              padding: const EdgeInsets.only(top: 25, left: 10, right: 10, bottom: 10), // Ajustar para que comience más abajo y margenes horizontales
+              padding: const EdgeInsets.only(top: 25, left: 10, right: 10, bottom: 10), // Ajustar para que comience más abajo y márgenes horizontales
               child: Row(
                 children: [
                   GestureDetector(
@@ -49,28 +71,43 @@ class AppMenuState extends State<AppMenu> {
                       height: 90, // Tamaño del logo incrementado
                     ),
                   ),
-                  const SizedBox(width: 20), // Espacio entre el logo y los íconos
-                  _buildIconButton(
-                    context,
-                    icon: FontAwesomeIcons.gamepad,
-                    tooltip: 'My Games',
-                    route: '/mygames',
-                  ),
-                  const SizedBox(width: 20), // Añadir padding entre botones
-                  _buildIconButton(
-                    context,
-                    icon: FontAwesomeIcons.users,
-                    tooltip: 'Community',
-                    route: '/community',
-                  ),
-                  const Spacer(),
-                  _buildIconButton(
-                    context,
-                    icon: FontAwesomeIcons.magnifyingGlass,
-                    tooltip: 'Search',
-                    route: '/buscar',
-                    isSearch: true,
-                  ),
+                  if (!widget.showLogoOnly) ...[
+                    const SizedBox(width: 20), // Espacio entre el logo y los íconos
+                    _buildIconButton(
+                      context,
+                      icon: FontAwesomeIcons.solidHeart,
+                      tooltip: 'My Games',
+                      route: '/mygames',
+                      disabled: user == null,
+                    ),
+                    const SizedBox(width: 20), // Añadir padding entre botones
+                    _buildIconButton(
+                      context,
+                      icon: FontAwesomeIcons.users,
+                      tooltip: 'Community',
+                      route: '/community',
+                      disabled: user == null,
+                    ),
+                    const Spacer(),
+                    _buildIconButton(
+                      context,
+                      icon: FontAwesomeIcons.magnifyingGlass,
+                      tooltip: 'Search',
+                      route: '/buscar',
+                      isSearch: true,
+                    ),
+                    const SizedBox(width: 20), // Añadir padding entre botones
+                    GestureDetector(
+                      onTap: _toggleAuth,
+                      child: Container(
+                        margin: const EdgeInsets.only(right: 14.0), // Ajusta el valor según lo necesitado
+                        child: FaIcon(
+                          user != null ? FontAwesomeIcons.plugCircleXmark : FontAwesomeIcons.solidUser,
+                          color: Colors.white,
+                        ),
+                      ),
+                    ),
+                  ],
                 ],
               ),
             ),
@@ -95,7 +132,9 @@ class AppMenuState extends State<AppMenu> {
     );
   }
 
-  Widget _buildIconButton(BuildContext context, {required IconData icon, required String tooltip, required String route, bool isSearch = false}) {
+  Widget _buildIconButton(BuildContext context, {required IconData icon, required String tooltip, required String route, bool isSearch = false, bool disabled = false}) {
+    final iconColor = disabled ? const Color.fromARGB(255, 105, 105, 105) : Colors.white;
+
     return Row(
       children: [
         if (isSearch)
@@ -134,7 +173,7 @@ class AppMenuState extends State<AppMenu> {
               });
             }
           },
-          child: Icon(icon, color: Colors.white),
+          child: Icon(icon, color: iconColor),
         ),
         if (!isSearch)
           AnimatedContainer(
