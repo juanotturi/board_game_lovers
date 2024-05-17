@@ -2,6 +2,7 @@ import 'package:board_game_lovers/entities/game_entity.dart';
 import 'package:board_game_lovers/screens/community_screen.dart';
 import 'package:board_game_lovers/screens/game_detail_screen.dart';
 import 'package:board_game_lovers/screens/home_screen.dart';
+import 'package:board_game_lovers/screens/login_screen.dart';
 import 'package:board_game_lovers/screens/search_games_screen.dart';
 import 'package:board_game_lovers/screens/my_games_screen.dart';
 import 'package:go_router/go_router.dart';
@@ -32,5 +33,10 @@ final appRouter = GoRouter(initialLocation: '/', routes: [
     path: '/buscar',
     name: SearchGamesScreen.name,
     builder: (context, state) => const SearchGamesScreen(), // Ruta para la pantalla de búsqueda
+  ),
+  GoRoute(
+    path: '/login', 
+    name: LoginScreen.name, 
+    builder: (context, state) => const LoginScreen()
   ),
 ]);

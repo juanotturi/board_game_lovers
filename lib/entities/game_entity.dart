@@ -12,7 +12,7 @@ class Game {
   final int? minAge;
   final Uri? thumbnail;
   final Uri? image;
-  final List<User>? members;
+  final List<BGLUser>? members;
 
   Game({
     required this.id,
@@ -43,7 +43,7 @@ class Game {
       thumbnail: Uri.parse(json['thumbnail'] as String? ?? ''),
       image: Uri.parse(json['image'] as String? ?? ''),
       members: (json['members'] as List<dynamic>?)
-          ?.map((userJson) => User.fromJson(userJson as Map<String, dynamic>))
+          ?.map((userJson) => BGLUser.fromJson(userJson as Map<String, dynamic>))
           .toList(),
     );
   }

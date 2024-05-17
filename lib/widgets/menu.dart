@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class AppMenu extends StatefulWidget implements PreferredSizeWidget {
   const AppMenu({super.key});
@@ -14,6 +15,31 @@ class AppMenu extends StatefulWidget implements PreferredSizeWidget {
 
 class AppMenuState extends State<AppMenu> {
   String? _selectedButton;
+  User? user;
+
+  @override
+  void initState() {
+    super.initState();
+    FirebaseAuth.instance.authStateChanges().listen((User? user) {
+      setState(() {
+        this.user = user;
+      });
+    });
+  }
+
+  void _toggleAuth() {
+    if (_selectedButton == 'Auth') {
+      if (user != null) {
+        FirebaseAuth.instance.signOut();
+      } else {
+        context.go('/login');
+      }
+    } else {
+      setState(() {
+        _selectedButton = 'Auth';
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -37,7 +63,7 @@ class AppMenuState extends State<AppMenu> {
             Container(
               height: 90, // Altura para la parte sin degradado
               color: const Color.fromRGBO(84, 40, 12, 1), // Color inicial
-              padding: const EdgeInsets.only(top: 25, left: 10, right: 10, bottom: 10), // Ajustar para que comience más abajo y margenes horizontales
+              padding: const EdgeInsets.only(top: 25, left: 10, right: 10, bottom: 10), // Ajustar para que comience más abajo y márgenes horizontales
               child: Row(
                 children: [
                   GestureDetector(
@@ -52,9 +78,10 @@ class AppMenuState extends State<AppMenu> {
                   const SizedBox(width: 20), // Espacio entre el logo y los íconos
                   _buildIconButton(
                     context,
-                    icon: FontAwesomeIcons.gamepad,
+                    icon: FontAwesomeIcons.solidHeart,
                     tooltip: 'My Games',
                     route: '/mygames',
+                    disabled: user == null,
                   ),
                   const SizedBox(width: 20), // Añadir padding entre botones
                   _buildIconButton(
@@ -62,6 +89,7 @@ class AppMenuState extends State<AppMenu> {
                     icon: FontAwesomeIcons.users,
                     tooltip: 'Community',
                     route: '/community',
+                    disabled: user == null,
                   ),
                   const Spacer(),
                   _buildIconButton(
@@ -70,6 +98,49 @@ class AppMenuState extends State<AppMenu> {
                     tooltip: 'Search',
                     route: '/buscar',
                     isSearch: true,
+                  ),
+                  const SizedBox(width: 20), // Añadir padding entre botones
+                  GestureDetector(
+                    onTap: () {
+                      if (_selectedButton == 'Auth') {
+                        _toggleAuth();
+                      } else {
+                        setState(() {
+                          _selectedButton = 'Auth';
+                        });
+                      }
+                    },
+                    child: Row(
+                      children: [
+                        AnimatedContainer(
+                          duration: const Duration(milliseconds: 300),
+                          width: _selectedButton == 'Auth' ? 60 : 0,
+                          child: GestureDetector(
+                            onTap: _toggleAuth,
+                            child: AnimatedOpacity(
+                              opacity: _selectedButton == 'Auth' ? 1.0 : 0.0,
+                              duration: const Duration(milliseconds: 300),
+                              child: Container(
+                                margin: const EdgeInsets.only(right: 4.0),
+                                child: Text(
+                                  user != null ? 'Logout' : 'Login',
+                                  overflow: TextOverflow.ellipsis,
+                                  style: const TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                        FaIcon(
+                          user != null ? FontAwesomeIcons.plugCircleXmark : FontAwesomeIcons.solidUser,
+                          color: Colors.white,
+                        ),
+                      ],
+                    ),
                   ),
                 ],
               ),
@@ -95,12 +166,14 @@ class AppMenuState extends State<AppMenu> {
     );
   }
 
-  Widget _buildIconButton(BuildContext context, {required IconData icon, required String tooltip, required String route, bool isSearch = false}) {
+  Widget _buildIconButton(BuildContext context, {required IconData icon, required String tooltip, required String route, bool isSearch = false, bool disabled = false}) {
+    final iconColor = disabled ? const Color.fromARGB(255, 105, 105, 105) : Colors.white;
+
     return Row(
       children: [
         if (isSearch)
           AnimatedContainer(
-            duration: const Duration(milliseconds: 300),
+            duration: Duration(milliseconds: disabled ? 0 : 300),
             width: _selectedButton == tooltip ? 60 : 0,
             child: GestureDetector(
               onTap: () {
@@ -108,7 +181,7 @@ class AppMenuState extends State<AppMenu> {
               },
               child: AnimatedOpacity(
                 opacity: _selectedButton == tooltip ? 1.0 : 0.0,
-                duration: const Duration(milliseconds: 300),
+                duration: Duration(milliseconds: disabled ? 0 : 300),
                 child: Container(
                   margin: const EdgeInsets.only(right: 4.0), // Reducir el margen aquí
                   child: const Text(
@@ -126,19 +199,21 @@ class AppMenuState extends State<AppMenu> {
           ),
         GestureDetector(
           onTap: () {
-            if (_selectedButton == tooltip) {
-              context.go(route);
-            } else {
-              setState(() {
-                _selectedButton = tooltip;
-              });
+            if (!disabled) {
+              if (_selectedButton == tooltip) {
+                context.go(route);
+              } else {
+                setState(() {
+                  _selectedButton = tooltip;
+                });
+              }
             }
           },
-          child: Icon(icon, color: Colors.white),
+          child: Icon(icon, color: iconColor),
         ),
         if (!isSearch)
           AnimatedContainer(
-            duration: const Duration(milliseconds: 300),
+            duration: Duration(milliseconds: disabled ? 0 : 300),
             width: _selectedButton == tooltip ? 100 : 0,
             child: GestureDetector(
               onTap: () {
@@ -146,7 +221,7 @@ class AppMenuState extends State<AppMenu> {
               },
               child: AnimatedOpacity(
                 opacity: _selectedButton == tooltip ? 1.0 : 0.0,
-                duration: const Duration(milliseconds: 300),
+                duration: Duration(milliseconds: disabled ? 0 : 300),
                 child: Container(
                   margin: const EdgeInsets.only(left: 8.0),
                   child: Text(

@@ -1,26 +1,44 @@
 {
   "project_info": {
-    "project_number": "1076767428827",
-    "project_id": "prueba-boardgame-lovers",
-    "storage_bucket": "prueba-boardgame-lovers.appspot.com"
+    "project_number": "1031787196633",
+    "project_id": "boardgame-lovers",
+    "storage_bucket": "boardgame-lovers.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:1076767428827:android:1c597f38b5fcc68784fcfe",
+        "mobilesdk_app_id": "1:1031787196633:android:38b9b4fbd257d3a5d70ec8",
         "android_client_info": {
-          "package_name": "com.example.board_game_lovers_prueba"
+          "package_name": "com.example.board_game_lovers"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "1031787196633-20t4i23it609j6qkftav797hkgtvrhin.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.board_game_lovers",
+            "certificate_hash": "655333c1d67de5c4edb54f070d4447b95f46c41c"
+          }
+        },
+        {
+          "client_id": "1031787196633-bbsqovi4pf8manbo2dt4342s8oqn0stq.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
-          "current_key": "AIzaSyAU9cxHvUQr171tPtBvJvXySJ93Ycmbg2Q"
+          "current_key": "AIzaSyC4SXW2y5BUyitgXbFJA9x38xwE7brPNNs"
         }
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1031787196633-bbsqovi4pf8manbo2dt4342s8oqn0stq.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
         }
       }
     }

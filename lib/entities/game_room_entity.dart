@@ -4,7 +4,7 @@ import 'game_entity.dart';
 class GameRoom {
   final int? id;
   final Game game;
-  final List<User> players;
+  final List<BGLUser> players;
 
   GameRoom({
     required this.id,

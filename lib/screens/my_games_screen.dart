@@ -11,7 +11,7 @@ class MyGamesScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder<User?>(
+    return FutureBuilder<BGLUser?>(
       future: userController.getUserById(1),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
@@ -19,7 +19,7 @@ class MyGamesScreen extends StatelessWidget {
         } else if (snapshot.hasError) {
           return Text('Error: ${snapshot.error}');
         } else {
-          final User? user = snapshot.data;
+          final BGLUser? user = snapshot.data;
           if (user != null) {
             return Scaffold(
               appBar: AppBar(
@@ -35,7 +35,7 @@ class MyGamesScreen extends StatelessWidget {
     );
   }
 
-  Widget buildFavoriteGamesList(User user) {
+  Widget buildFavoriteGamesList(BGLUser user) {
     if (user.favoriteGames != null && user.favoriteGames!.isNotEmpty) {
       return ListView.builder(
         itemCount: user.favoriteGames!.length,
