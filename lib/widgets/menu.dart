@@ -20,6 +20,7 @@ class AppMenuState extends State<AppMenu> {
     return AppBar(
       toolbarHeight: 110, // Aumentar la altura del AppBar
       backgroundColor: Colors.transparent, // Hacer el AppBar transparente
+      automaticallyImplyLeading: false, // Eliminar la flecha de retroceso
       flexibleSpace: Container(
         decoration: const BoxDecoration(
           gradient: LinearGradient(
@@ -41,7 +42,7 @@ class AppMenuState extends State<AppMenu> {
                 children: [
                   GestureDetector(
                     onTap: () {
-                      context.go('/'); // Ruta a la pantalla principal, asegurándose de redirigir a HomeScreen
+                      context.go('/'); // Ruta a la pantalla principal
                     },
                     child: Image.asset(
                       'assets/logo.png', // Asegúrate de que el logo esté en la carpeta assets
@@ -164,5 +165,4 @@ class AppMenuState extends State<AppMenu> {
       ],
     );
   }
-
 }

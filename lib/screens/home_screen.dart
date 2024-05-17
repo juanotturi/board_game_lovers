@@ -147,19 +147,6 @@ class HomeScreenState extends State<HomeScreen> {
                       ),
                     ),
                     const SizedBox(height: 8),
-                    SizedBox(
-                      height: 24,
-                      child: Center(
-                        child: Text(
-                          'Publish date: ${game.yearPublished}',
-                          style: const TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      ),
-                    ),
-                    const SizedBox(height: 8),
                     // Establecer una altura fija para el contenedor de la imagen
                     SizedBox(
                       height: 200,
