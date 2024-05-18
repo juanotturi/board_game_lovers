@@ -47,7 +47,7 @@ class _MyGamesScreenState extends State<MyGamesScreen> {
           Padding(
             padding: const EdgeInsets.only(left: 16, top: 8),
             child: Text(
-              'Mis Juegos - ${_user!.name} ${_user!.surname}',
+              'Mis Juegos - ${_user!.name}',
               style: Theme.of(context).textTheme.titleLarge,
             ),
           ),
@@ -72,7 +72,7 @@ class _MyGamesScreenState extends State<MyGamesScreen> {
       return ListView.builder(
         itemCount: user.favoriteGames!.length,
         itemBuilder: (context, index) {
-          final game = user.favoriteGames![index];
+          final game = user.favoriteGamesDetails![index];
           return ListTile(
             title: Text(game.title ?? ''),
             subtitle: Text('Año: ${game.yearPublished}'),

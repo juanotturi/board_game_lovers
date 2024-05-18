@@ -58,8 +58,8 @@ class GameDetailScreenState extends State<GameDetailScreen> {
                   GestureDetector(
                     onTap: () {
                       if (_selectedButton == 'Back') {
-                        if (Navigator.of(context).canPop()) {
-                          Navigator.of(context).pop();
+                        if (context.canPop()) {
+                          context.pop();
                         } else {
                           context.goNamed(HomeScreen.name);
                         }

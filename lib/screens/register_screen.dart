@@ -37,6 +37,7 @@ class RegisterScreenState extends State<RegisterScreen> {
       context,
       _emailController.text,
       _passwordController.text,
+      _nameController.text
     );
     setState(() {
       _isLoading = false;
@@ -59,8 +60,8 @@ class RegisterScreenState extends State<RegisterScreen> {
                   GestureDetector(
                     onTap: () {
                       if (_selectedButton == 'Back') {
-                        if (Navigator.of(context).canPop()) {
-                          Navigator.of(context).pop();
+                        if (context.canPop()) {
+                          context.pop();
                         } else {
                           context.go('/'); // Reemplaza HomeScreen.name con la ruta correspondiente
                         }

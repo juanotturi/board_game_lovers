@@ -1,5 +1,3 @@
-import 'package:board_game_lovers/entities/user_entity.dart';
-
 class Game {
   final int? id;
   final String? title;
@@ -12,7 +10,6 @@ class Game {
   final int? minAge;
   final Uri? thumbnail;
   final Uri? image;
-  final List<BGLUser>? members;
 
   Game({
     required this.id,
@@ -26,7 +23,6 @@ class Game {
     required this.minAge,
     required this.thumbnail,
     required this.image,
-    this.members,
   });
 
   factory Game.fromJson(Map<String, dynamic> json) {
@@ -41,10 +37,7 @@ class Game {
       maxPlayTime: json['maxPlayTime'] as int?,
       minAge: json['minAge'] as int?,
       thumbnail: Uri.parse(json['thumbnail'] as String? ?? ''),
-      image: Uri.parse(json['image'] as String? ?? ''),
-      members: (json['members'] as List<dynamic>?)
-          ?.map((userJson) => BGLUser.fromJson(userJson as Map<String, dynamic>))
-          .toList(),
+      image: Uri.parse(json['image'] as String? ?? '')
     );
   }
 }
