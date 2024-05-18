@@ -1,11 +1,12 @@
 import 'package:board_game_lovers/screens/home_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:board_game_lovers/entities/game_entity.dart';
-import 'package:board_game_lovers/widgets/menu.dart'; // Importa el menú
+import 'package:board_game_lovers/widgets/menu.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:go_router/go_router.dart';
-import 'package:firebase_auth/firebase_auth.dart'; // Importa FirebaseAuth
+import 'package:provider/provider.dart';
+import 'package:board_game_lovers/core/controller/user_controller.dart';
 
 class GameDetailScreen extends StatefulWidget {
   static const String name = 'game_detail_screen';
@@ -20,32 +21,34 @@ class GameDetailScreen extends StatefulWidget {
 class GameDetailScreenState extends State<GameDetailScreen> {
   String? _selectedButton;
   bool _isFavorite = false;
-  User? user;
 
   @override
   void initState() {
     super.initState();
-    // Escucha los cambios en el estado de autenticación
-    FirebaseAuth.instance.authStateChanges().listen((User? user) {
-      setState(() {
-        this.user = user;
-      });
-    });
+    final userController = Provider.of<UserController>(context, listen: false);
+    _isFavorite = userController.currentBGLUser?.favoriteGamesDetails?.any((game) => game.id == widget.game.id) ?? false;
   }
 
-  void _toggleFavorite() {
-    if (user != null) {
+  void _toggleFavorite() async {
+    final userController = Provider.of<UserController>(context, listen: false);
+    if (userController.currentUser != null) {
       setState(() {
         _isFavorite = !_isFavorite;
       });
-      // userController.addToFavorite(widget.game);
+      if (_isFavorite) {
+        await userController.addToFavorite(widget.game);
+      } else {
+        await userController.removeFromFavorite(widget.game);
+      }
     }
   }
 
   @override
   Widget build(BuildContext context) {
+    final userController = Provider.of<UserController>(context);
+
     return Scaffold(
-      appBar: const AppMenu(), // Usa el menú aquí
+      appBar: const AppMenu(),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(8.0),
         child: Column(
@@ -115,8 +118,8 @@ class GameDetailScreenState extends State<GameDetailScreen> {
                       fontWeight: FontWeight.bold,
                       color: Colors.black,
                     ),
-                    softWrap: true, // Permite el ajuste de línea
-                    overflow: TextOverflow.visible, // Asegura que el texto se ajuste y no se corte
+                    softWrap: true,
+                    overflow: TextOverflow.visible,
                   ),
                   const SizedBox(height: 8),
                   Row(
@@ -130,23 +133,23 @@ class GameDetailScreenState extends State<GameDetailScreen> {
                           color: Colors.grey,
                         ),
                       ),
-                      if (user != null)
+                      if (userController.currentUser != null)
                         GestureDetector(
                           onTap: _toggleFavorite,
                           child: Container(
-                            margin: const EdgeInsets.only(right: 8.0), // Margen a la derecha
+                            margin: const EdgeInsets.only(right: 8.0),
                             child: Stack(
                               alignment: Alignment.center,
                               children: [
                                 const FaIcon(
                                   FontAwesomeIcons.solidHeart,
-                                  color: Colors.black, // El borde negro
-                                  size: 27, // Tamaño ligeramente mayor para crear el borde
+                                  color: Colors.black,
+                                  size: 27,
                                 ),
                                 FaIcon(
                                   FontAwesomeIcons.solidHeart,
                                   color: _isFavorite ? Colors.red : Colors.white,
-                                  size: 24, // Tamaño original de la estrella
+                                  size: 24,
                                 ),
                               ],
                             ),
@@ -164,8 +167,7 @@ class GameDetailScreenState extends State<GameDetailScreen> {
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          _buildInfoColumn(
-                              FontAwesomeIcons.userGroup, '${widget.game.minPlayers}-${widget.game.maxPlayers}'),
+                          _buildInfoColumn(FontAwesomeIcons.userGroup, '${widget.game.minPlayers}-${widget.game.maxPlayers}'),
                           _buildInfoColumn(FontAwesomeIcons.clock, '${widget.game.minPlayTime}-${widget.game.maxPlayTime} min'),
                           _buildInfoColumn(FontAwesomeIcons.cakeCandles, '${widget.game.minAge}+'),
                         ],
@@ -206,7 +208,7 @@ class GameDetailScreenState extends State<GameDetailScreen> {
           ],
         ),
       ),
-      backgroundColor: const Color.fromARGB(255, 216, 195, 164), // Color de fondo acorde
+      backgroundColor: const Color.fromARGB(255, 216, 195, 164),
     );
   }
 

@@ -14,9 +14,17 @@ class UserController extends ChangeNotifier {
   final GameController _gameController = GameController();
 
   User? get currentUser => _auth.currentUser;
+  BGLUser? _currentBGLUser;
+
+  BGLUser? get currentBGLUser => _currentBGLUser;
 
   UserController() {
-    _auth.authStateChanges().listen((User? user) {
+    _auth.authStateChanges().listen((User? user) async {
+      if (user != null) {
+        _currentBGLUser = await getCurrentUser();
+      } else {
+        _currentBGLUser = null;
+      }
       notifyListeners();
     });
   }
@@ -27,6 +35,7 @@ class UserController extends ChangeNotifier {
         email: email.trim(),
         password: password.trim(),
       );
+      _currentBGLUser = await getCurrentUser();
       if (context.mounted) {
         context.push('/');
       }
@@ -84,8 +93,9 @@ class UserController extends ChangeNotifier {
         idToken: googleSignInAuthentication.idToken,
       );
       await _auth.signInWithCredential(credential);
+      _currentBGLUser = await getCurrentUser();
       if (context.mounted) {
-        context.push('/'); // Reemplaza con la ruta correcta hacia la pantalla principal
+        context.push('/');
       }
     } catch (e) {
       if (context.mounted) {
@@ -105,8 +115,9 @@ class UserController extends ChangeNotifier {
         'email': email,
         'favoriteGames': []
       });
+      _currentBGLUser = await getCurrentUser();
       if (context.mounted) {
-        context.push('/'); // Reemplaza con la ruta correcta hacia la pantalla principal
+        context.push('/');
       }
     } on FirebaseAuthException catch (e) {
       if (context.mounted) {
@@ -122,19 +133,77 @@ class UserController extends ChangeNotifier {
   }
 
   Future<void> manageAuth(BuildContext context) async {
-  try {
-    if (_auth.currentUser != null) {
-      await _auth.signOut();
-      if (context.mounted) {
-        context.go('/');
+    try {
+      if (_auth.currentUser != null) {
+        await _auth.signOut();
+        _currentBGLUser = null;
+        if (context.mounted) {
+          context.go('/');
+        }
+      } else {
+        if (context.mounted) {
+          context.push('/login');
+        }
       }
-    } else {
-      if (context.mounted) {
-        context.push('/login');
-      }
+    } catch (e) {
+      return;
     }
-  } catch (e) {
-    return;
   }
-}
+
+  Future<void> addToFavorite(Game game) async {
+    final currentUser = _auth.currentUser;
+    if (currentUser != null) {
+      final userDocRef = _firestore.collection('users').doc(currentUser.uid);
+      await userDocRef.update({
+        'favoriteGames': FieldValue.arrayUnion([game.id])
+      });
+
+      final communityQuery = await _firestore
+          .collection('communities')
+          .where('gameId', isEqualTo: game.id)
+          .get();
+
+      if (communityQuery.docs.isNotEmpty) {
+        final communityDocRef = communityQuery.docs.first.reference;
+        await communityDocRef.update({
+          'users': FieldValue.arrayUnion([userDocRef])
+        });
+      } else {
+        await _firestore.collection('communities').add({
+          'gameId': game.id,
+          'users': [userDocRef]
+        });
+      }
+
+      _currentBGLUser?.favoriteGames?.add(game.id!);
+      _currentBGLUser?.favoriteGamesDetails?.add(game);
+      notifyListeners();
+    }
+  }
+
+  Future<void> removeFromFavorite(Game game) async {
+    final currentUser = _auth.currentUser;
+    if (currentUser != null) {
+      final userDocRef = _firestore.collection('users').doc(currentUser.uid);
+      await userDocRef.update({
+        'favoriteGames': FieldValue.arrayRemove([game.id])
+      });
+
+      final communityQuery = await _firestore
+          .collection('communities')
+          .where('gameId', isEqualTo: game.id)
+          .get();
+
+      if (communityQuery.docs.isNotEmpty) {
+        final communityDocRef = communityQuery.docs.first.reference;
+        await communityDocRef.update({
+          'users': FieldValue.arrayRemove([userDocRef])
+        });
+      }
+
+      _currentBGLUser?.favoriteGames?.remove(game.id);
+      _currentBGLUser?.favoriteGamesDetails?.removeWhere((g) => g.id == game.id);
+      notifyListeners();
+    }
+  }
 }
