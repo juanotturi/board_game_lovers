@@ -121,14 +121,20 @@ class UserController extends ChangeNotifier {
     }
   }
 
-  Future<void> signOut(BuildContext context) async {
-    try {
+  Future<void> manageAuth(BuildContext context) async {
+  try {
+    if (_auth.currentUser != null) {
       await _auth.signOut();
+      if (context.mounted) {
+        context.go('/');
+      }
+    } else {
       if (context.mounted) {
         context.push('/login');
       }
-    } catch (e) {
-      return;
     }
+  } catch (e) {
+    return;
   }
+}
 }
