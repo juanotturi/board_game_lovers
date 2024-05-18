@@ -18,7 +18,7 @@ class CommunityScreenState extends State<CommunityScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: const AppMenu(), // Usa el menú aquí
+      appBar: const AppMenu(),
       body: Column(
         children: [
           Container(
@@ -84,7 +84,8 @@ class CommunityScreenState extends State<CommunityScreen> {
           // Aquí puedes agregar más contenido para la pantalla de Comunidad
         ],
       ),
-      backgroundColor: const Color.fromARGB(255, 216, 195, 164), // Color de fondo acorde
+      backgroundColor:
+          const Color.fromARGB(255, 216, 195, 164), // Color de fondo acorde
     );
   }
 }
