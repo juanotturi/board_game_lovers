@@ -1,6 +1,6 @@
 import 'package:board_game_lovers/screens/home_screen.dart';
 import 'package:flutter/material.dart';
-import 'package:board_game_lovers/widgets/menu.dart'; // Importa el menú
+import 'package:board_game_lovers/widgets/menu.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
 
@@ -81,11 +81,9 @@ class CommunityScreenState extends State<CommunityScreen> {
               ],
             ),
           ),
-          // Aquí puedes agregar más contenido para la pantalla de Comunidad
         ],
       ),
-      backgroundColor:
-          const Color.fromARGB(255, 216, 195, 164), // Color de fondo acorde
+      backgroundColor: const Color.fromARGB(255, 216, 195, 164),
     );
   }
 }

@@ -2,10 +2,10 @@ import 'package:board_game_lovers/entities/game_entity.dart';
 import 'package:http/http.dart' as http;
 import 'package:html/parser.dart' as parser;
 import 'package:bgg_api/bgg_api.dart';
-import 'package:board_game_lovers/entities/paginated_results_entity.dart'; // Importa la clase PaginatedResult
+import 'package:board_game_lovers/entities/paginated_results_entity.dart';
 
 class GameController {
-  static const int _maxRetries = 3; // Número máximo de reintentos
+  static const int _maxRetries = 3;
 
   Stream<Game> getBoardGameTop() async* {
     const url = 'https://boardgamegeek.com/browse/boardgame';
@@ -62,31 +62,29 @@ class GameController {
         );
       } catch (e) {
         if (attempt == _maxRetries - 1) {
-          rethrow; // Re-lanzar la excepción después de alcanzar el número máximo de reintentos
+          rethrow;
         }
-        await Future.delayed(const Duration(seconds: 2)); // Esperar antes de reintentar
+        await Future.delayed(const Duration(seconds: 2));
       }
     }
-    return null; // Este punto nunca debería alcanzarse
+    return null;
   }
 
-  Future<PaginatedResult<Game>> getPaginatedBoardGames(String query, int page, int pageSize) async {
+  Future<PaginatedResult<Game>> getPaginatedBoardGames(
+      String query, int page, int pageSize) async {
     var bgg = Bgg();
     final List<Game> searchResults = [];
     var searchResult = await bgg.searchBoardGames(query);
 
-    // Obtener los índices de la página
     int start = (page - 1) * pageSize;
     int end = start + pageSize;
     end = end < searchResult.length ? end : searchResult.length;
 
-    // Iterar solo sobre los resultados de la página actual
     for (var i = start; i < end; i++) {
       var bg = searchResult[i];
       for (int attempt = 0; attempt < _maxRetries; attempt++) {
         try {
           final boardGame = await bgg.getBoardGame(bg.id!);
-
           var game = Game(
             id: boardGame?.id,
             title: boardGame?.name,
@@ -102,12 +100,12 @@ class GameController {
           );
 
           searchResults.add(game);
-          break; // Salir del bucle de reintentos si se obtiene el juego correctamente
+          break;
         } catch (e) {
           if (attempt == _maxRetries - 1) {
-            rethrow; // Re-lanzar la excepción después de alcanzar el número máximo de reintentos
+            rethrow;
           }
-          await Future.delayed(const Duration(seconds: 2)); // Esperar antes de reintentar
+          await Future.delayed(const Duration(seconds: 2));
         }
       }
     }

@@ -5,7 +5,7 @@ import 'package:board_game_lovers/entities/game_entity.dart';
 import 'package:board_game_lovers/core/controller/game_controller.dart';
 import 'package:go_router/go_router.dart';
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:board_game_lovers/widgets/menu.dart'; // Importa el menú
+import 'package:board_game_lovers/widgets/menu.dart';
 
 class HomeScreen extends StatefulWidget {
   static const String name = '/games';
@@ -46,20 +46,18 @@ class HomeScreenState extends State<HomeScreen> {
           _isLoading = false;
         });
       }
-      // Manejar el error aquí, por ejemplo, mostrar un mensaje de error
     });
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: const AppMenu(), // Usa el menú aquí
+      appBar: const AppMenu(),
       body: ListView.builder(
         padding: const EdgeInsets.all(16.0),
-        itemCount: _gameList.length + (_isLoading ? 1 : 0), // Agregar 1 solo si estamos cargando
+        itemCount: _gameList.length + (_isLoading ? 1 : 0),
         itemBuilder: (context, index) {
           if (index == _gameList.length) {
-            // Mostrar el indicador de carga al final de la lista si aún estamos cargando
             return _isLoading
                 ? const Center(
                     child: Padding(
@@ -67,7 +65,7 @@ class HomeScreenState extends State<HomeScreen> {
                       child: CircularProgressIndicator(),
                     ),
                   )
-                : const SizedBox.shrink(); // Espacio vacío si no se está cargando
+                : const SizedBox.shrink();
           }
 
           final game = _gameList[index];
@@ -147,7 +145,6 @@ class HomeScreenState extends State<HomeScreen> {
                       ),
                     ),
                     const SizedBox(height: 8),
-                    // Establecer una altura fija para el contenedor de la imagen
                     SizedBox(
                       height: 200,
                       child: CachedNetworkImage(
@@ -155,14 +152,14 @@ class HomeScreenState extends State<HomeScreen> {
                         fit: BoxFit.cover,
                         placeholder: (context, url) => Container(
                           color: Colors.grey[200],
-                          height: 200, // Establecer la altura fija aquí también
+                          height: 200,
                           child: const Center(
                             child: CircularProgressIndicator(),
                           ),
                         ),
                         errorWidget: (context, url, error) => Container(
                           color: Colors.grey,
-                          height: 200, // Establecer la altura fija aquí también
+                          height: 200,
                           child: const Icon(Icons.error),
                         ),
                       ),
