@@ -6,56 +6,54 @@ import 'package:board_game_lovers/widgets/menu.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:go_router/go_router.dart';
 import 'package:board_game_lovers/screens/game_detail_screen.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class MyGamesScreen extends StatefulWidget {
   static const String name = '/mygames';
   const MyGamesScreen({super.key});
 
   @override
-  // ignore: library_private_types_in_public_api
-  _MyGamesScreenState createState() => _MyGamesScreenState();
+  MyGamesScreenState createState() => MyGamesScreenState();
 }
 
-class _MyGamesScreenState extends State<MyGamesScreen> {
-  BGLUser? _user;
-
-  @override
-  void initState() {
-    super.initState();
-    _loadCurrentUser();
-  }
-
-  Future<void> _loadCurrentUser() async {
-    final userController = Provider.of<UserController>(context, listen: false);
-    final user = await userController.getCurrentUser();
-    setState(() {
-      _user = user;
-    });
-  }
-
+class MyGamesScreenState extends State<MyGamesScreen> {
   @override
   Widget build(BuildContext context) {
+    final userController = Provider.of<UserController>(context);
+    final BGLUser? user = userController.currentBGLUser;
+
     return Scaffold(
       appBar: const AppMenu(),
-      body: _buildContent(),
+      body: _buildContent(user),
       backgroundColor: const Color.fromARGB(255, 216, 195, 164),
     );
   }
 
-  Widget _buildContent() {
-    if (_user != null) {
+  Widget _buildContent(BGLUser? user) {
+    if (user != null) {
       return Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Padding(
-            padding: const EdgeInsets.only(left: 16, top: 8),
-            child: Text(
-              'Favoritos de ${_user!.name}',
-              style: Theme.of(context).textTheme.titleLarge,
+          Container(
+            width: double.infinity,
+            padding: const EdgeInsets.symmetric(vertical: 16.0, horizontal: 24.0),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(
+                  'Your Favorite Games',
+                  style: Theme.of(context).textTheme.headlineLarge?.copyWith(
+                    color: Colors.brown[800],
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                const SizedBox(width: 10),
+                const FaIcon(FontAwesomeIcons.solidHeart, color: Colors.red, size: 28),
+              ],
             ),
           ),
           Expanded(
-            child: buildFavoriteGamesList(_user!),
+            child: buildFavoriteGamesList(user),
           ),
         ],
       );
@@ -67,14 +65,14 @@ class _MyGamesScreenState extends State<MyGamesScreen> {
   }
 
   Widget buildFavoriteGamesList(BGLUser user) {
-    if (user.favoriteGames == null || user.favoriteGames!.isEmpty) {
+    if (user.favoriteGamesDetails == null || user.favoriteGamesDetails!.isEmpty) {
       return const Center(
         child: Text('No hay juegos favoritos'),
       );
     } else {
       return ListView.builder(
         padding: const EdgeInsets.all(16.0),
-        itemCount: user.favoriteGames!.length,
+        itemCount: user.favoriteGamesDetails!.length,
         itemBuilder: (context, index) {
           final game = user.favoriteGamesDetails![index];
           return GestureDetector(

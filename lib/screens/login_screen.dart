@@ -196,17 +196,6 @@ class LoginScreenState extends State<LoginScreen> {
                                   ),
                           ),
                           const SizedBox(height: 10),
-                          if (_isLogin)
-                            TextButton(
-                              onPressed: () {
-                                // Navegar a la pantalla de restablecer contraseña
-                              },
-                              child: const Text(
-                                'Forgot your password?',
-                                style: TextStyle(color: Colors.black),
-                              ),
-                            ),
-                          const SizedBox(height: 10),
                           ElevatedButton.icon(
                             icon: Image.asset('assets/google_logo.png',
                                 height: 24),
