@@ -103,6 +103,8 @@ class SearchGamesScreenState extends State<SearchGamesScreen> {
               controller: _searchController,
               decoration: InputDecoration(
                 hintText: 'Search...',
+                fillColor: Colors.white, // Fondo blanco
+                filled: true,
                 suffixIcon: IconButton(
                   icon: const FaIcon(FontAwesomeIcons.magnifyingGlass),
                   onPressed: _searchGames,

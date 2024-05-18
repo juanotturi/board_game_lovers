@@ -5,6 +5,7 @@ import 'package:board_game_lovers/widgets/menu.dart'; // Importa el menú
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:go_router/go_router.dart';
+import 'package:firebase_auth/firebase_auth.dart'; // Importa FirebaseAuth
 
 class GameDetailScreen extends StatefulWidget {
   static const String name = 'game_detail_screen';
@@ -19,13 +20,26 @@ class GameDetailScreen extends StatefulWidget {
 class GameDetailScreenState extends State<GameDetailScreen> {
   String? _selectedButton;
   bool _isFavorite = false;
+  User? user;
+
+  @override
+  void initState() {
+    super.initState();
+    // Escucha los cambios en el estado de autenticación
+    FirebaseAuth.instance.authStateChanges().listen((User? user) {
+      setState(() {
+        this.user = user;
+      });
+    });
+  }
 
   void _toggleFavorite() {
-    setState(() {
-      _isFavorite = !_isFavorite;
-    });
-    // Aquí llamas al método addToFavorite del UserController
-    // userController.addToFavorite(widget.game);
+    if (user != null) {
+      setState(() {
+        _isFavorite = !_isFavorite;
+      });
+      // userController.addToFavorite(widget.game);
+    }
   }
 
   @override
@@ -116,27 +130,28 @@ class GameDetailScreenState extends State<GameDetailScreen> {
                           color: Colors.grey,
                         ),
                       ),
-                      GestureDetector(
-                        onTap: _toggleFavorite,
-                        child: Container(
-                          margin: const EdgeInsets.only(right: 8.0), // Margen a la derecha
-                          child: Stack(
-                            alignment: Alignment.center,
-                            children: [
-                              const FaIcon(
-                                FontAwesomeIcons.solidHeart,
-                                color: Colors.black, // El borde negro
-                                size: 27, // Tamaño ligeramente mayor para crear el borde
-                              ),
-                              FaIcon(
-                                FontAwesomeIcons.solidHeart,
-                                color: _isFavorite ? Colors.red : Colors.white,
-                                size: 24, // Tamaño original de la estrella
-                              ),
-                            ],
+                      if (user != null)
+                        GestureDetector(
+                          onTap: _toggleFavorite,
+                          child: Container(
+                            margin: const EdgeInsets.only(right: 8.0), // Margen a la derecha
+                            child: Stack(
+                              alignment: Alignment.center,
+                              children: [
+                                const FaIcon(
+                                  FontAwesomeIcons.solidHeart,
+                                  color: Colors.black, // El borde negro
+                                  size: 27, // Tamaño ligeramente mayor para crear el borde
+                                ),
+                                FaIcon(
+                                  FontAwesomeIcons.solidHeart,
+                                  color: _isFavorite ? Colors.red : Colors.white,
+                                  size: 24, // Tamaño original de la estrella
+                                ),
+                              ],
+                            ),
                           ),
                         ),
-                      ),
                     ],
                   ),
                   const SizedBox(height: 16),

@@ -97,16 +97,7 @@ class AppMenuState extends State<AppMenu> {
                       isSearch: true,
                     ),
                     const SizedBox(width: 20), // Añadir padding entre botones
-                    GestureDetector(
-                      onTap: _toggleAuth,
-                      child: Container(
-                        margin: const EdgeInsets.only(right: 14.0), // Ajusta el valor según lo necesitado
-                        child: FaIcon(
-                          user != null ? FontAwesomeIcons.plugCircleXmark : FontAwesomeIcons.solidUser,
-                          color: Colors.white,
-                        ),
-                      ),
-                    ),
+                    _buildAuthButton(context),
                   ],
                 ],
               ),
@@ -132,6 +123,62 @@ class AppMenuState extends State<AppMenu> {
     );
   }
 
+  Widget _buildAuthButton(BuildContext context) {
+    return Row(
+      children: [
+        AnimatedContainer(
+          duration: const Duration(milliseconds: 300),
+          width: _selectedButton == 'Auth' ? 60 : 0,
+          child: GestureDetector(
+            onTap: () {
+              if (_selectedButton == 'Auth') {
+                _toggleAuth();
+              } else {
+                setState(() {
+                  _selectedButton = 'Auth';
+                });
+              }
+            },
+            child: AnimatedOpacity(
+              opacity: _selectedButton == 'Auth' ? 1.0 : 0.0,
+              duration: const Duration(milliseconds: 300),
+              child: Container(
+                margin: const EdgeInsets.only(right: 4.0), // Reducir el margen aquí
+                child: Text(
+                  user != null ? 'Logout' : 'Login',
+                  overflow: TextOverflow.ellipsis, // Asegurarse de que el texto no se pase a dos líneas
+                  style: const TextStyle(
+                    color: Colors.white,
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ),
+        GestureDetector(
+          onTap: () {
+            if (_selectedButton == 'Auth') {
+              _toggleAuth();
+            } else {
+              setState(() {
+                _selectedButton = 'Auth';
+              });
+            }
+          },
+          child: Container(
+            margin: const EdgeInsets.only(right: 14.0), // Mantener el margen aquí
+            child: Icon(
+              user != null ? FontAwesomeIcons.plugCircleXmark : FontAwesomeIcons.solidUser,
+              color: Colors.white,
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
   Widget _buildIconButton(BuildContext context, {required IconData icon, required String tooltip, required String route, bool isSearch = false, bool disabled = false}) {
     final iconColor = disabled ? const Color.fromARGB(255, 105, 105, 105) : Colors.white;
 
@@ -143,7 +190,9 @@ class AppMenuState extends State<AppMenu> {
             width: _selectedButton == tooltip ? 60 : 0,
             child: GestureDetector(
               onTap: () {
-                context.go(route);
+                if (!disabled) {
+                  context.go(route);
+                }
               },
               child: AnimatedOpacity(
                 opacity: _selectedButton == tooltip ? 1.0 : 0.0,
@@ -165,27 +214,31 @@ class AppMenuState extends State<AppMenu> {
           ),
         GestureDetector(
           onTap: () {
-            if (_selectedButton == tooltip) {
-              context.go(route);
-            } else {
-              setState(() {
-                _selectedButton = tooltip;
-              });
+            if (!disabled) {
+              if (_selectedButton == tooltip) {
+                context.go(route);
+              } else {
+                setState(() {
+                  _selectedButton = tooltip;
+                });
+              }
             }
           },
           child: Icon(icon, color: iconColor),
         ),
         if (!isSearch)
           AnimatedContainer(
-            duration: const Duration(milliseconds: 300),
+            duration: Duration(milliseconds: disabled ? 0 : 300),
             width: _selectedButton == tooltip ? 100 : 0,
             child: GestureDetector(
               onTap: () {
-                context.go(route);
+                if (!disabled) {
+                  context.go(route);
+                }
               },
               child: AnimatedOpacity(
                 opacity: _selectedButton == tooltip ? 1.0 : 0.0,
-                duration: const Duration(milliseconds: 300),
+                duration: Duration(milliseconds: disabled ? 0 : 300),
                 child: Container(
                   margin: const EdgeInsets.only(left: 8.0),
                   child: Text(
