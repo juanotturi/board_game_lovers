@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:board_game_lovers/widgets/menu.dart'; // Importa el menú
+import 'package:board_game_lovers/widgets/menu.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:board_game_lovers/core/controller/user_controller.dart';
@@ -18,27 +18,26 @@ class RegisterScreenState extends State<RegisterScreen> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
-  final TextEditingController _confirmPasswordController = TextEditingController();
+  final TextEditingController _confirmPasswordController =
+      TextEditingController();
   bool _isPasswordVisible = false;
   bool _isConfirmPasswordVisible = false;
   bool _isLoading = false;
   String? _selectedButton;
 
-  Future<void> _signUpWithEmailAndPassword(UserController userController) async {
+  Future<void> _signUpWithEmailAndPassword(
+      UserController userController) async {
     if (_passwordController.text != _confirmPasswordController.text) {
-      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("Passwords do not match")));
+      ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text("Passwords do not match")));
       return;
     }
 
     setState(() {
       _isLoading = true;
     });
-    await userController.signUpWithEmail(
-      context,
-      _emailController.text,
-      _passwordController.text,
-      _nameController.text
-    );
+    await userController.signUpWithEmail(context, _emailController.text,
+        _passwordController.text, _nameController.text);
     setState(() {
       _isLoading = false;
     });
@@ -47,7 +46,7 @@ class RegisterScreenState extends State<RegisterScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: const AppMenu(showLogoOnly: true), // Usa el menú con solo el logo
+      appBar: const AppMenu(showLogoOnly: true),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(8.0),
         child: Column(
@@ -63,7 +62,7 @@ class RegisterScreenState extends State<RegisterScreen> {
                         if (context.canPop()) {
                           context.pop();
                         } else {
-                          context.go('/'); // Reemplaza HomeScreen.name con la ruta correspondiente
+                          context.go('/');
                         }
                       } else {
                         setState(() {
@@ -161,7 +160,9 @@ class RegisterScreenState extends State<RegisterScreen> {
                               labelText: 'Password',
                               prefixIcon: const Icon(Icons.lock),
                               suffixIcon: IconButton(
-                                icon: Icon(_isPasswordVisible ? Icons.visibility : Icons.visibility_off),
+                                icon: Icon(_isPasswordVisible
+                                    ? Icons.visibility
+                                    : Icons.visibility_off),
                                 onPressed: () {
                                   setState(() {
                                     _isPasswordVisible = !_isPasswordVisible;
@@ -181,10 +182,13 @@ class RegisterScreenState extends State<RegisterScreen> {
                               labelText: 'Confirm Password',
                               prefixIcon: const Icon(Icons.lock),
                               suffixIcon: IconButton(
-                                icon: Icon(_isConfirmPasswordVisible ? Icons.visibility : Icons.visibility_off),
+                                icon: Icon(_isConfirmPasswordVisible
+                                    ? Icons.visibility
+                                    : Icons.visibility_off),
                                 onPressed: () {
                                   setState(() {
-                                    _isConfirmPasswordVisible = !_isConfirmPasswordVisible;
+                                    _isConfirmPasswordVisible =
+                                        !_isConfirmPasswordVisible;
                                   });
                                 },
                               ),
@@ -198,14 +202,16 @@ class RegisterScreenState extends State<RegisterScreen> {
                             onPressed: _isLoading
                                 ? null
                                 : () async {
-                                    await _signUpWithEmailAndPassword(userController);
+                                    await _signUpWithEmailAndPassword(
+                                        userController);
                                   },
                             style: ElevatedButton.styleFrom(
                               backgroundColor: Colors.brown,
                             ),
                             child: _isLoading
                                 ? const CircularProgressIndicator(
-                                    valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                                    valueColor: AlwaysStoppedAnimation<Color>(
+                                        Colors.white),
                                   )
                                 : const Text(
                                     'Register',

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:board_game_lovers/widgets/menu.dart'; // Importa el menú
+import 'package:board_game_lovers/widgets/menu.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:board_game_lovers/core/controller/user_controller.dart';
@@ -22,11 +22,13 @@ class LoginScreenState extends State<LoginScreen> {
   bool _isLogin = true;
   String? _selectedButton;
 
-  Future<void> _signInWithEmailAndPassword(UserController userController) async {
+  Future<void> _signInWithEmailAndPassword(
+      UserController userController) async {
     setState(() {
       _isLoading = true;
     });
-    await userController.signInWithEmail(context, _emailController.text, _passwordController.text);
+    await userController.signInWithEmail(
+        context, _emailController.text, _passwordController.text);
     setState(() {
       _isLoading = false;
     });
@@ -51,7 +53,7 @@ class LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: const AppMenu(showLogoOnly: true), // Usa el menú con solo el logo
+      appBar: const AppMenu(showLogoOnly: true),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(8.0),
         child: Column(
@@ -67,7 +69,7 @@ class LoginScreenState extends State<LoginScreen> {
                         if (context.canPop()) {
                           context.pop();
                         } else {
-                          context.go('/'); // Reemplaza HomeScreen.name con la ruta correspondiente
+                          context.go('/');
                         }
                       } else {
                         setState(() {
@@ -154,7 +156,9 @@ class LoginScreenState extends State<LoginScreen> {
                               labelText: 'Password',
                               prefixIcon: const Icon(Icons.lock),
                               suffixIcon: IconButton(
-                                icon: Icon(_isPasswordVisible ? Icons.visibility : Icons.visibility_off),
+                                icon: Icon(_isPasswordVisible
+                                    ? Icons.visibility
+                                    : Icons.visibility_off),
                                 onPressed: () {
                                   setState(() {
                                     _isPasswordVisible = !_isPasswordVisible;
@@ -172,7 +176,8 @@ class LoginScreenState extends State<LoginScreen> {
                                 ? null
                                 : () async {
                                     if (_isLogin) {
-                                      await _signInWithEmailAndPassword(userController);
+                                      await _signInWithEmailAndPassword(
+                                          userController);
                                     } else {
                                       _toggleFormType();
                                     }
@@ -182,7 +187,8 @@ class LoginScreenState extends State<LoginScreen> {
                             ),
                             child: _isLoading
                                 ? const CircularProgressIndicator(
-                                    valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                                    valueColor: AlwaysStoppedAnimation<Color>(
+                                        Colors.white),
                                   )
                                 : Text(
                                     _isLogin ? 'Sign In' : 'Register',
@@ -202,7 +208,8 @@ class LoginScreenState extends State<LoginScreen> {
                             ),
                           const SizedBox(height: 10),
                           ElevatedButton.icon(
-                            icon: Image.asset('assets/google_logo.png', height: 24),
+                            icon: Image.asset('assets/google_logo.png',
+                                height: 24),
                             label: const Text('Access with Google'),
                             style: ElevatedButton.styleFrom(
                               backgroundColor: Colors.white,

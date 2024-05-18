@@ -5,8 +5,8 @@ import 'package:board_game_lovers/entities/game_entity.dart';
 import 'package:board_game_lovers/core/controller/game_controller.dart';
 import 'package:go_router/go_router.dart';
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:board_game_lovers/widgets/menu.dart'; // Importa el menú
-import 'package:board_game_lovers/entities/paginated_results_entity.dart'; // Importa la clase PaginatedResult
+import 'package:board_game_lovers/widgets/menu.dart';
+import 'package:board_game_lovers/entities/paginated_results_entity.dart';
 
 class SearchGamesScreen extends StatefulWidget {
   static const String name = '/buscar';
@@ -36,12 +36,14 @@ class SearchGamesScreenState extends State<SearchGamesScreen> {
       _hasSearched = true;
     });
     _currentQuery = _searchController.text;
-    FocusScope.of(context).unfocus(); // Ocultar el teclado
+    FocusScope.of(context).unfocus();
     _loadPage();
   }
 
   void _loadPage() {
-    _gameController.getPaginatedBoardGames(_currentQuery, _currentPage, _pageSize).then((PaginatedResult<Game> result) {
+    _gameController
+        .getPaginatedBoardGames(_currentQuery, _currentPage, _pageSize)
+        .then((PaginatedResult<Game> result) {
       if (mounted) {
         setState(() {
           _searchResults = result.results;
@@ -56,7 +58,6 @@ class SearchGamesScreenState extends State<SearchGamesScreen> {
           _isLoading = false;
         });
       }
-      // Manejar el error aquí, por ejemplo, mostrar un mensaje de error
     });
   }
 
@@ -93,7 +94,7 @@ class SearchGamesScreenState extends State<SearchGamesScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: const AppMenu(), // Usa el menú aquí
+      appBar: const AppMenu(),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
@@ -103,7 +104,7 @@ class SearchGamesScreenState extends State<SearchGamesScreen> {
               controller: _searchController,
               decoration: InputDecoration(
                 hintText: 'Search...',
-                fillColor: Colors.white, // Fondo blanco
+                fillColor: Colors.white,
                 filled: true,
                 suffixIcon: IconButton(
                   icon: const FaIcon(FontAwesomeIcons.magnifyingGlass),
@@ -149,7 +150,8 @@ class SearchGamesScreenState extends State<SearchGamesScreen> {
                           const SizedBox(width: 16),
                           Row(
                             children: [
-                              const FaIcon(FontAwesomeIcons.solidFile, size: 16),
+                              const FaIcon(FontAwesomeIcons.solidFile,
+                                  size: 16),
                               const SizedBox(width: 4),
                               Text(
                                 '$_currentPage / $_totalPages',
@@ -167,7 +169,8 @@ class SearchGamesScreenState extends State<SearchGamesScreen> {
                           final game = _searchResults[index];
                           return GestureDetector(
                             onTap: () {
-                              context.pushNamed(GameDetailScreen.name, extra: game);
+                              context.pushNamed(GameDetailScreen.name,
+                                  extra: game);
                             },
                             child: Card(
                               shape: RoundedRectangleBorder(
@@ -178,7 +181,8 @@ class SearchGamesScreenState extends State<SearchGamesScreen> {
                                 child: Column(
                                   mainAxisSize: MainAxisSize.min,
                                   mainAxisAlignment: MainAxisAlignment.start,
-                                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                                  crossAxisAlignment:
+                                      CrossAxisAlignment.stretch,
                                   children: [
                                     const SizedBox(height: 8),
                                     Text(
@@ -192,22 +196,23 @@ class SearchGamesScreenState extends State<SearchGamesScreen> {
                                       ),
                                     ),
                                     const SizedBox(height: 8),
-                                    // Establecer una altura fija para el contenedor de la imagen
                                     SizedBox(
                                       height: 200,
                                       child: CachedNetworkImage(
                                         imageUrl: game.image!.toString(),
                                         fit: BoxFit.cover,
-                                        placeholder: (context, url) => Container(
+                                        placeholder: (context, url) =>
+                                            Container(
                                           color: Colors.grey[200],
-                                          height: 200, // Establecer la altura fija aquí también
+                                          height: 200,
                                           child: const Center(
                                             child: CircularProgressIndicator(),
                                           ),
                                         ),
-                                        errorWidget: (context, url, error) => Container(
+                                        errorWidget: (context, url, error) =>
+                                            Container(
                                           color: Colors.grey,
-                                          height: 200, // Establecer la altura fija aquí también
+                                          height: 200,
                                           child: const Icon(Icons.error),
                                         ),
                                       ),
@@ -237,11 +242,14 @@ class SearchGamesScreenState extends State<SearchGamesScreen> {
                             return GestureDetector(
                               onTap: () => _goToPage(page),
                               child: Container(
-                                padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                                padding:
+                                    const EdgeInsets.symmetric(horizontal: 8.0),
                                 child: Text(
                                   page.toString(),
                                   style: TextStyle(
-                                    fontWeight: page == _currentPage ? FontWeight.bold : FontWeight.normal,
+                                    fontWeight: page == _currentPage
+                                        ? FontWeight.bold
+                                        : FontWeight.normal,
                                   ),
                                 ),
                               ),
@@ -250,7 +258,8 @@ class SearchGamesScreenState extends State<SearchGamesScreen> {
                           SizedBox(
                             width: 50,
                             child: TextField(
-                              controller: TextEditingController(text: _currentPage.toString()),
+                              controller: TextEditingController(
+                                  text: _currentPage.toString()),
                               keyboardType: TextInputType.number,
                               textAlign: TextAlign.center,
                               decoration: const InputDecoration(
@@ -273,18 +282,22 @@ class SearchGamesScreenState extends State<SearchGamesScreen> {
                             return GestureDetector(
                               onTap: () => _goToPage(page),
                               child: Container(
-                                padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                                padding:
+                                    const EdgeInsets.symmetric(horizontal: 8.0),
                                 child: Text(
                                   page.toString(),
                                   style: TextStyle(
-                                    fontWeight: page == _currentPage ? FontWeight.bold : FontWeight.normal,
+                                    fontWeight: page == _currentPage
+                                        ? FontWeight.bold
+                                        : FontWeight.normal,
                                   ),
                                 ),
                               ),
                             );
                           }),
                           IconButton(
-                            onPressed: _currentPage < _totalPages ? _nextPage : null,
+                            onPressed:
+                                _currentPage < _totalPages ? _nextPage : null,
                             icon: const FaIcon(FontAwesomeIcons.arrowRight),
                           ),
                         ],
@@ -295,7 +308,7 @@ class SearchGamesScreenState extends State<SearchGamesScreen> {
           ],
         ),
       ),
-      backgroundColor: const Color.fromARGB(255, 216, 195, 164), // Color de fondo acorde
+      backgroundColor: const Color.fromARGB(255, 216, 195, 164),
     );
   }
 }

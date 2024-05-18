@@ -29,7 +29,8 @@ class UserController extends ChangeNotifier {
     });
   }
 
-  Future<void> signInWithEmail(BuildContext context, String email, String password) async {
+  Future<void> signInWithEmail(
+      BuildContext context, String email, String password) async {
     try {
       await _auth.signInWithEmailAndPassword(
         email: email.trim(),
@@ -42,9 +43,11 @@ class UserController extends ChangeNotifier {
     } on FirebaseAuthException catch (e) {
       if (context.mounted) {
         if (e.code == "invalid-credential") {
-          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("Invalid credentials")));
+          ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(content: Text("Invalid credentials")));
         } else {
-          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("An error occurred")));
+          ScaffoldMessenger.of(context)
+              .showSnackBar(const SnackBar(content: Text("An error occurred")));
         }
       }
     }
@@ -54,7 +57,8 @@ class UserController extends ChangeNotifier {
     try {
       final currentUser = _auth.currentUser;
       if (currentUser != null) {
-        final userDoc = await _firestore.collection('users').doc(currentUser.uid).get();
+        final userDoc =
+            await _firestore.collection('users').doc(currentUser.uid).get();
         if (userDoc.exists) {
           final userData = userDoc.data()!;
           BGLUser bglUser = BGLUser.fromFirestore(userData);
@@ -85,8 +89,10 @@ class UserController extends ChangeNotifier {
 
   Future<void> signInWithGoogle(BuildContext context) async {
     try {
-      final GoogleSignInAccount? googleSignInAccount = await _googleSignIn.signIn();
-      final GoogleSignInAuthentication googleSignInAuthentication = await googleSignInAccount!.authentication;
+      final GoogleSignInAccount? googleSignInAccount =
+          await _googleSignIn.signIn();
+      final GoogleSignInAuthentication googleSignInAuthentication =
+          await googleSignInAccount!.authentication;
 
       final AuthCredential credential = GoogleAuthProvider.credential(
         accessToken: googleSignInAuthentication.accessToken,
@@ -99,12 +105,14 @@ class UserController extends ChangeNotifier {
       }
     } catch (e) {
       if (context.mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("An error occurred")));
+        ScaffoldMessenger.of(context)
+            .showSnackBar(const SnackBar(content: Text("An error occurred")));
       }
     }
   }
 
-  Future<void> signUpWithEmail(BuildContext context, String email, String password, String name) async {
+  Future<void> signUpWithEmail(
+      BuildContext context, String email, String password, String name) async {
     try {
       UserCredential credential = await _auth.createUserWithEmailAndPassword(
         email: email.trim(),
@@ -122,11 +130,14 @@ class UserController extends ChangeNotifier {
     } on FirebaseAuthException catch (e) {
       if (context.mounted) {
         if (e.code == "email-already-in-use") {
-          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("Email already in use")));
+          ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(content: Text("Email already in use")));
         } else if (e.code == "weak-password") {
-          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("Weak password")));
+          ScaffoldMessenger.of(context)
+              .showSnackBar(const SnackBar(content: Text("Weak password")));
         } else {
-          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("An error occurred")));
+          ScaffoldMessenger.of(context)
+              .showSnackBar(const SnackBar(content: Text("An error occurred")));
         }
       }
     }
