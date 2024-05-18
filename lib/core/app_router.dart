@@ -1,4 +1,6 @@
+import 'package:board_game_lovers/entities/community_game_entity.dart';
 import 'package:board_game_lovers/entities/game_entity.dart';
+import 'package:board_game_lovers/screens/community_game_detail_screen.dart';
 import 'package:board_game_lovers/screens/community_screen.dart';
 import 'package:board_game_lovers/screens/game_detail_screen.dart';
 import 'package:board_game_lovers/screens/home_screen.dart';
@@ -19,7 +21,8 @@ final appRouter = GoRouter(initialLocation: '/', routes: [
       name: GameDetailScreen.name,
       builder: (context, state) => GameDetailScreen(
             game: state.extra as Game,
-          )),
+          )
+  ),
   GoRoute(
     path: '/mygames',
     name: MyGamesScreen.name,
@@ -31,17 +34,26 @@ final appRouter = GoRouter(initialLocation: '/', routes: [
     builder: (context, state) => const CommunityScreen(),
   ),
   GoRoute(
+      path: '/communityGameDetail',
+      name: CommunityGameDetailScreen.name,
+      builder: (context, state) => CommunityGameDetailScreen(
+              communityGame: state.extra as CommunityGame,
+            )
+  ),
+  GoRoute(
     path: '/buscar',
     name: SearchGamesScreen.name,
     builder: (context, state) =>
-        const SearchGamesScreen(), // Ruta para la pantalla de búsqueda
+        const SearchGamesScreen(), 
   ),
   GoRoute(
       path: '/login',
       name: LoginScreen.name,
-      builder: (context, state) => const LoginScreen()),
+      builder: (context, state) => const LoginScreen()
+  ),
   GoRoute(
       path: '/register',
       name: RegisterScreen.name,
-      builder: (context, state) => const RegisterScreen()),
+      builder: (context, state) => const RegisterScreen()
+  ),     
 ]);
