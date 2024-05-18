@@ -23,7 +23,7 @@ final appRouter = GoRouter(initialLocation: '/', routes: [
   GoRoute(
     path: '/mygames',
     name: MyGamesScreen.name,
-    builder: (context, state) => MyGamesScreen(),
+    builder: (context, state) => const MyGamesScreen(),
   ),
   GoRoute(
     path: '/community',
@@ -33,15 +33,15 @@ final appRouter = GoRouter(initialLocation: '/', routes: [
   GoRoute(
     path: '/buscar',
     name: SearchGamesScreen.name,
-    builder: (context, state) => const SearchGamesScreen(), // Ruta para la pantalla de búsqueda
+    builder: (context, state) =>
+        const SearchGamesScreen(), // Ruta para la pantalla de búsqueda
   ),
   GoRoute(
-    path: '/login', 
-    name: LoginScreen.name, 
-    builder: (context, state) => const LoginScreen()
-  ),  GoRoute(
-    path: '/register', 
-    name: RegisterScreen.name, 
-    builder: (context, state) => const RegisterScreen()
-  ),
+      path: '/login',
+      name: LoginScreen.name,
+      builder: (context, state) => const LoginScreen()),
+  GoRoute(
+      path: '/register',
+      name: RegisterScreen.name,
+      builder: (context, state) => const RegisterScreen()),
 ]);
