@@ -89,7 +89,7 @@ class AppMenuState extends State<AppMenu> {
                       icon: FontAwesomeIcons.users,
                       tooltip: 'Community',
                       route: '/community',
-                      disabled: true,
+                      disabled: user == null,
                     ),
                     const Spacer(),
                     _buildIconButton(
