@@ -89,17 +89,19 @@ class HomeScreenState extends State<HomeScreen> {
           }
 
           final game = _gameList[index];
-          final isFavorite = userController.currentBGLUser?.favoriteGamesDetails?.any((favoriteGame) => favoriteGame.id == game.id) ?? false;
+          final isFavorite = userController.currentBGLUser?.favoriteGamesDetails
+                  ?.any((favoriteGame) => favoriteGame.id == game.id) ??
+              false;
 
           Color trophyColor;
           if (index == 0) {
-            trophyColor = Colors.amber; // Oro
+            trophyColor = Colors.amber;
           } else if (index == 1) {
-            trophyColor = Colors.grey; // Plata
+            trophyColor = Colors.grey;
           } else if (index == 2) {
-            trophyColor = Colors.brown; // Bronce
+            trophyColor = Colors.brown;
           } else {
-            trophyColor = Colors.blueGrey; // Otros
+            trophyColor = Colors.blueGrey;
           }
 
           return GestureDetector(
@@ -196,10 +198,13 @@ class HomeScreenState extends State<HomeScreen> {
                     StreamBuilder<int>(
                       stream: getLikesCount(game.id.toString()),
                       builder: (context, snapshot) {
-                        if (snapshot.connectionState == ConnectionState.waiting) {
-                          return const SizedBox(height: 20, child: CircularProgressIndicator());
+                        if (snapshot.connectionState ==
+                            ConnectionState.waiting) {
+                          return const SizedBox(
+                              height: 20, child: CircularProgressIndicator());
                         } else if (snapshot.hasError) {
-                          return const Text('Error al cargar los datos de los likes');
+                          return const Text(
+                              'Error al cargar los datos de los likes');
                         } else {
                           final likesCount = snapshot.data ?? 0;
                           return _buildStarRating(likesCount);
@@ -217,17 +222,20 @@ class HomeScreenState extends State<HomeScreen> {
   }
 
   Widget _buildStarRating(int likesCount) {
-    int fullStars = likesCount.clamp(0, 5); // Limitar el número de estrellas llenas entre 0 y 5
+    int fullStars = likesCount.clamp(0, 5);
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: List.generate(5, (index) {
         return Icon(
-          index < fullStars ? FontAwesomeIcons.solidStar : FontAwesomeIcons.star,
-          color: index < fullStars ? const Color.fromARGB(255, 161, 150, 44) : Colors.grey,
+          index < fullStars
+              ? FontAwesomeIcons.solidStar
+              : FontAwesomeIcons.star,
+          color: index < fullStars
+              ? const Color.fromARGB(255, 161, 150, 44)
+              : Colors.grey,
           size: 20,
         );
       }),
     );
-    }
-
+  }
 }

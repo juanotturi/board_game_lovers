@@ -1,9 +1,9 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:board_game_lovers/core/app_router.dart'; // Importa el archivo app_router.dart
-import 'package:provider/provider.dart'; // Importa provider
-import 'package:board_game_lovers/core/controller/user_controller.dart'; // Importa tu UserController
+import 'package:board_game_lovers/core/app_router.dart';
+import 'package:provider/provider.dart';
+import 'package:board_game_lovers/core/controller/user_controller.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -46,8 +46,8 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => UserController()),
       ],
       child: MaterialApp.router(
-        debugShowCheckedModeBanner: false, // Quitar el tag de "DEBUG"
-        routerConfig: appRouter, // Usa el appRouter definido en app_router.dart
+        debugShowCheckedModeBanner: false,
+        routerConfig: appRouter,
         theme: ThemeData(
           primarySwatch: Colors.blue,
           scaffoldBackgroundColor: const Color.fromARGB(255, 216, 195, 164),

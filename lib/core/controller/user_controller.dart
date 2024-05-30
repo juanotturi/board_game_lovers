@@ -34,7 +34,8 @@ class UserController extends ChangeNotifier {
     });
   }
 
-  Future<void> signInWithEmail(BuildContext context, String email, String password) async {
+  Future<void> signInWithEmail(
+      BuildContext context, String email, String password) async {
     try {
       await _auth.signInWithEmailAndPassword(
         email: email.trim(),
@@ -54,7 +55,7 @@ class UserController extends ChangeNotifier {
     }
   }
 
-    Future<BGLUser?> getCurrentUser() async {
+  Future<BGLUser?> getCurrentUser() async {
     try {
       final currentUser = _auth.currentUser;
       if (currentUser != null) {
@@ -90,8 +91,10 @@ class UserController extends ChangeNotifier {
 
   Future<void> signInWithGoogle(BuildContext context) async {
     try {
-      final GoogleSignInAccount? googleSignInAccount = await _googleSignIn.signIn();
-      final GoogleSignInAuthentication googleSignInAuthentication = await googleSignInAccount!.authentication;
+      final GoogleSignInAccount? googleSignInAccount =
+          await _googleSignIn.signIn();
+      final GoogleSignInAuthentication googleSignInAuthentication =
+          await googleSignInAccount!.authentication;
 
       final AuthCredential credential = GoogleAuthProvider.credential(
         accessToken: googleSignInAuthentication.accessToken,
@@ -112,17 +115,17 @@ class UserController extends ChangeNotifier {
     }
   }
 
-  Future<void> signUpWithEmail(BuildContext context, String email, String password, String name) async {
+  Future<void> signUpWithEmail(
+      BuildContext context, String email, String password, String name) async {
     try {
       UserCredential credential = await _auth.createUserWithEmailAndPassword(
         email: email.trim(),
         password: password.trim(),
       );
-      await _firestore.collection('users').doc(credential.user?.uid).set({
-        'name': name,
-        'email': email,
-        'favoriteGames': []
-      });
+      await _firestore
+          .collection('users')
+          .doc(credential.user?.uid)
+          .set({'name': name, 'email': email, 'favoriteGames': []});
       _currentBGLUser = await getCurrentUser();
       await _loadCommunityGames();
       if (context.mounted) {
@@ -183,7 +186,7 @@ class UserController extends ChangeNotifier {
 
       _currentBGLUser?.favoriteGames?.add(game.id!);
       _currentBGLUser?.favoriteGamesDetails?.add(game);
-      await _loadCommunityGames(); // Cargar la lista de juegos de la comunidad nuevamente
+      await _loadCommunityGames();
       notifyListeners();
     }
   }
@@ -209,8 +212,9 @@ class UserController extends ChangeNotifier {
       }
 
       _currentBGLUser?.favoriteGames?.remove(game.id);
-      _currentBGLUser?.favoriteGamesDetails?.removeWhere((g) => g.id == game.id);
-      await _loadCommunityGames(); // Cargar la lista de juegos de la comunidad nuevamente
+      _currentBGLUser?.favoriteGamesDetails
+          ?.removeWhere((g) => g.id == game.id);
+      await _loadCommunityGames();
       notifyListeners();
     }
   }
@@ -226,16 +230,19 @@ class UserController extends ChangeNotifier {
 
         if (communityQuery.docs.isNotEmpty) {
           final communityData = communityQuery.docs.first.data();
-          Game? game = await _gameController.getBoardGame(communityData['gameId']);
+          Game? game =
+              await _gameController.getBoardGame(communityData['gameId']);
           if (game != null) {
             List<BGLUser> users = [];
             for (DocumentReference userRef in communityData['users']) {
               final userDoc = await userRef.get();
               if (userDoc.exists) {
-                users.add(BGLUser.fromFirestore(userDoc.data() as Map<String, dynamic>));
+                users.add(BGLUser.fromFirestore(
+                    userDoc.data() as Map<String, dynamic>));
               }
             }
-            _communityGames!.add(CommunityGame(id: gameId, game: game, users: users));
+            _communityGames!
+                .add(CommunityGame(id: gameId, game: game, users: users));
           }
         }
       }
