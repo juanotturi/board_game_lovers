@@ -6,6 +6,9 @@ import 'package:board_game_lovers/core/controller/game_controller.dart';
 import 'package:go_router/go_router.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:board_game_lovers/widgets/menu.dart';
+import 'package:provider/provider.dart';
+import 'package:board_game_lovers/core/controller/user_controller.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class HomeScreen extends StatefulWidget {
   static const String name = '/games';
@@ -49,8 +52,25 @@ class HomeScreenState extends State<HomeScreen> {
     });
   }
 
+  Stream<int> getLikesCount(String gameId) {
+    int gameIdInt = int.parse(gameId);
+    return FirebaseFirestore.instance
+        .collection('communities')
+        .where('gameId', isEqualTo: gameIdInt)
+        .snapshots()
+        .map((snapshot) {
+      if (snapshot.docs.isNotEmpty) {
+        var usersList = snapshot.docs.first.data()['users'] as List<dynamic>?;
+        return usersList?.length ?? 0;
+      }
+      return 0;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
+    final userController = Provider.of<UserController>(context);
+
     return Scaffold(
       appBar: const AppMenu(),
       body: ListView.builder(
@@ -69,6 +89,8 @@ class HomeScreenState extends State<HomeScreen> {
           }
 
           final game = _gameList[index];
+          final isFavorite = userController.currentBGLUser?.favoriteGamesDetails?.any((favoriteGame) => favoriteGame.id == game.id) ?? false;
+
           Color trophyColor;
           if (index == 0) {
             trophyColor = Colors.amber; // Oro
@@ -164,6 +186,26 @@ class HomeScreenState extends State<HomeScreen> {
                         ),
                       ),
                     ),
+                    if (isFavorite)
+                      const FaIcon(
+                        FontAwesomeIcons.solidHeart,
+                        color: Colors.red,
+                        size: 24,
+                      ),
+                    const SizedBox(height: 8),
+                    StreamBuilder<int>(
+                      stream: getLikesCount(game.id.toString()),
+                      builder: (context, snapshot) {
+                        if (snapshot.connectionState == ConnectionState.waiting) {
+                          return const SizedBox(height: 20, child: CircularProgressIndicator());
+                        } else if (snapshot.hasError) {
+                          return const Text('Error al cargar los datos de los likes');
+                        } else {
+                          final likesCount = snapshot.data ?? 0;
+                          return _buildStarRating(likesCount);
+                        }
+                      },
+                    ),
                   ],
                 ),
               ),
@@ -173,4 +215,19 @@ class HomeScreenState extends State<HomeScreen> {
       ),
     );
   }
+
+  Widget _buildStarRating(int likesCount) {
+    int fullStars = likesCount.clamp(0, 5); // Limitar el número de estrellas llenas entre 0 y 5
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: List.generate(5, (index) {
+        return Icon(
+          index < fullStars ? FontAwesomeIcons.solidStar : FontAwesomeIcons.star,
+          color: index < fullStars ? const Color.fromARGB(255, 161, 150, 44) : Colors.grey,
+          size: 20,
+        );
+      }),
+    );
+    }
+
 }
