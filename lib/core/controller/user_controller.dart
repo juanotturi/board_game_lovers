@@ -183,7 +183,7 @@ class UserController extends ChangeNotifier {
 
       _currentBGLUser?.favoriteGames?.add(game.id!);
       _currentBGLUser?.favoriteGamesDetails?.add(game);
-      await _loadCommunityGames(); // Cargar la lista de juegos de la comunidad nuevamente
+      await _loadCommunityGames();
       notifyListeners();
     }
   }
@@ -210,7 +210,7 @@ class UserController extends ChangeNotifier {
 
       _currentBGLUser?.favoriteGames?.remove(game.id);
       _currentBGLUser?.favoriteGamesDetails?.removeWhere((g) => g.id == game.id);
-      await _loadCommunityGames(); // Cargar la lista de juegos de la comunidad nuevamente
+      await _loadCommunityGames();
       notifyListeners();
     }
   }

@@ -217,7 +217,7 @@ class HomeScreenState extends State<HomeScreen> {
   }
 
   Widget _buildStarRating(int likesCount) {
-    int fullStars = likesCount.clamp(0, 5); // Limitar el número de estrellas llenas entre 0 y 5
+    int fullStars = likesCount.clamp(0, 5);
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: List.generate(5, (index) {

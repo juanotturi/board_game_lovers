@@ -165,7 +165,7 @@ class CommunityGameDetailScreenState extends State<CommunityGameDetailScreen> {
                                 const FaIcon(
                                   FontAwesomeIcons.envelope,
                                   size: 14,
-                                  color: Colors.black87, // Color ligeramente más oscuro
+                                  color: Colors.black87,
                                 ),
                                 const SizedBox(width: 8),
                                 Expanded(
@@ -175,7 +175,7 @@ class CommunityGameDetailScreenState extends State<CommunityGameDetailScreen> {
                                       user.email!,
                                       style: const TextStyle(
                                         fontSize: 14,
-                                        color: Colors.black87, // Color ligeramente más oscuro
+                                        color: Colors.black87,
                                       ),
                                       overflow: TextOverflow.ellipsis,
                                     ),
