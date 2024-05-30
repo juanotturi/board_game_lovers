@@ -52,21 +52,6 @@ class HomeScreenState extends State<HomeScreen> {
     });
   }
 
-  Stream<int> getLikesCount(String gameId) {
-    int gameIdInt = int.parse(gameId);
-    return FirebaseFirestore.instance
-        .collection('communities')
-        .where('gameId', isEqualTo: gameIdInt)
-        .snapshots()
-        .map((snapshot) {
-      if (snapshot.docs.isNotEmpty) {
-        var usersList = snapshot.docs.first.data()['users'] as List<dynamic>?;
-        return usersList?.length ?? 0;
-      }
-      return 0;
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
     final userController = Provider.of<UserController>(context);
@@ -192,20 +177,6 @@ class HomeScreenState extends State<HomeScreen> {
                         color: Colors.red,
                         size: 24,
                       ),
-                    const SizedBox(height: 8),
-                    StreamBuilder<int>(
-                      stream: getLikesCount(game.id.toString()),
-                      builder: (context, snapshot) {
-                        if (snapshot.connectionState == ConnectionState.waiting) {
-                          return const SizedBox(height: 20, child: CircularProgressIndicator());
-                        } else if (snapshot.hasError) {
-                          return const Text('Error al cargar los datos de los likes');
-                        } else {
-                          final likesCount = snapshot.data ?? 0;
-                          return _buildStarRating(likesCount);
-                        }
-                      },
-                    ),
                   ],
                 ),
               ),
@@ -215,19 +186,4 @@ class HomeScreenState extends State<HomeScreen> {
       ),
     );
   }
-
-  Widget _buildStarRating(int likesCount) {
-    int fullStars = likesCount.clamp(0, 5);
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: List.generate(5, (index) {
-        return Icon(
-          index < fullStars ? FontAwesomeIcons.solidStar : FontAwesomeIcons.star,
-          color: index < fullStars ? const Color.fromARGB(255, 161, 150, 44) : Colors.grey,
-          size: 20,
-        );
-      }),
-    );
-    }
-
 }

@@ -216,31 +216,37 @@ class UserController extends ChangeNotifier {
   }
 
   Future<void> _loadCommunityGames() async {
-    _communityGames = [];
-    if (_currentBGLUser != null && _currentBGLUser!.favoriteGames != null) {
-      for (int? gameId in _currentBGLUser!.favoriteGames!) {
-        final communityQuery = await _firestore
-            .collection('communities')
-            .where('gameId', isEqualTo: gameId)
-            .get();
+  _communityGames = [];
+  if (_currentBGLUser != null && _currentBGLUser!.favoriteGames != null) {
+    for (int? gameId in _currentBGLUser!.favoriteGames!) {
+      final communityQuery = await _firestore
+          .collection('communities')
+          .where('gameId', isEqualTo: gameId)
+          .get();
 
-        if (communityQuery.docs.isNotEmpty) {
-          final communityData = communityQuery.docs.first.data();
-          Game? game = await _gameController.getBoardGame(communityData['gameId']);
-          if (game != null) {
-            List<BGLUser> users = [];
-            for (DocumentReference userRef in communityData['users']) {
-              final userDoc = await userRef.get();
-              if (userDoc.exists) {
-                users.add(BGLUser.fromFirestore(userDoc.data() as Map<String, dynamic>));
-              }
+      if (communityQuery.docs.isNotEmpty) {
+        final communityData = communityQuery.docs.first.data();
+        Game? game = await _gameController.getBoardGame(communityData['gameId']);
+        if (game != null) {
+          List<BGLUser> users = [];
+          for (DocumentReference userRef in communityData['users']) {
+            final userDoc = await userRef.get();
+            if (userDoc.exists) {
+              users.add(BGLUser.fromFirestore(userDoc.data() as Map<String, dynamic>));
             }
+          }
+
+          bool gameExists = _communityGames!.any((communityGame) => communityGame.id == gameId);
+
+          if (!gameExists) {
             _communityGames!.add(CommunityGame(id: gameId, game: game, users: users));
           }
         }
       }
     }
   }
+}
+
 
   String _getErrorMessage(String errorCode) {
     switch (errorCode) {
